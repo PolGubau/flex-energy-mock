@@ -31,7 +31,7 @@ const SERVICES: Array<{
     type: "electricity",
     label: "Electricity",
     Icon: Zap,
-    cardClass: "bg-primary/5 text-primary",
+    cardClass: "bg-emerald-50 text-emerald-700 ring-emerald-100",
     iconBg: "bg-emerald-100",
     iconColor: "text-emerald-600",
   },
@@ -39,7 +39,7 @@ const SERVICES: Array<{
     type: "gas",
     label: "Gas",
     Icon: Flame,
-    cardClass: "bg-muted text-muted-foreground",
+    cardClass: "bg-sky-50 text-sky-700 ring-sky-100",
     iconBg: "bg-sky-100",
     iconColor: "text-sky-600",
   },
@@ -47,7 +47,7 @@ const SERVICES: Array<{
     type: "water",
     label: "Water",
     Icon: Droplets,
-    cardClass: "bg-muted text-muted-foreground",
+    cardClass: "bg-violet-50 text-violet-700 ring-violet-100",
     iconBg: "bg-violet-100",
     iconColor: "text-violet-600",
   },
@@ -170,13 +170,13 @@ export function DashboardHome({
                   onClick={() => navigate(`/contracts?service=${type}`)}
                   className={`min-w-0 px-3 py-4 text-center transition-colors hover:bg-muted/40 active:bg-muted/60 ${cardClass}`}
                 >
-                  <span className="mx-auto mb-2.5 flex size-9 items-center justify-center rounded-full bg-card/70 shadow-sm">
+                  <span className="mx-auto mb-2.5 flex size-9 items-center justify-center rounded-full bg-white/65">
                     <Icon className="size-4" />
                   </span>
-                  <p className="truncate text-xs font-medium">
+                  <p className="truncate text-xs font-semibold">
                     {t(`dashboard.commodity.${type}`)}
                   </p>
-                  <p className="mt-1 truncate text-sm font-semibold tabular-nums">
+                  <p className="mt-0.5 truncate text-sm font-bold tabular-nums">
                     {balance}
                   </p>
                 </button>
