@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { getClient } from "@/lib/smartsphere";
+import { getClient } from "@/demo/client";
 import type { ExportItemDto } from "@/lib/smartsphere/modules/file-manager";
 import { cn } from "@/lib/utils";
 

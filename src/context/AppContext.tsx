@@ -2,7 +2,7 @@ import type React from "react";
 import { createContext, useContext, useEffect, useState } from "react";
 import { apiService } from "../services/api";
 import type { AlertSettings, AppState, Notification } from "../types";
-import { formatCurrency, toMinorUnits } from "../types";
+import { toMinorUnits } from "../types";
 import { useAuth } from "./AuthContext";
 
 export interface CartRechargeItem {
@@ -16,6 +16,7 @@ interface AppContextType {
   recharge: (amount: number) => Promise<void>;
   rechargeContract: (contractId: number, amount: number, scale: number) => Promise<void>;
   rechargeCart: (items: CartRechargeItem[]) => Promise<void>;
+  refreshState: () => Promise<void>;
   toggleAlert: (key: keyof AlertSettings) => Promise<void>;
   updateAlertSettings: (settings: Partial<AlertSettings>) => Promise<void>;
   addNotification: (
@@ -29,7 +30,7 @@ interface AppContextType {
     contractId: number,
     displayName: string,
   ) => Promise<void>;
-  /** First contract ID from the user's dashboard — used by hooks for API calls. */
+  /** First simulated contract ID, used by the feature hooks. */
   contractId: number;
   isLoading: boolean;
 }
@@ -49,50 +50,25 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       return;
     }
     setIsLoading(true);
+    let cancelled = false;
     apiService
       .getAppState(user.id)
-      .then((data) => setState(data))
-      .catch(() => setState(null))
-      .finally(() => setIsLoading(false));
+      .then((data) => { if (!cancelled) setState(data); })
+      .catch(() => { if (!cancelled) setState(null); })
+      .finally(() => { if (!cancelled) setIsLoading(false); });
+    return () => { cancelled = true; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   const contractId = state?.dashboard?.contracts?.[0]?.contractId ?? 0;
 
+  const refreshState = async () => {
+    if (user) setState(await apiService.getAppState(user.id));
+  };
+
   const recharge = async (amount: number) => {
     if (!state?.dashboard || !user) return;
-    const amountMinor = toMinorUnits(amount, state.dashboard.scale);
-
-    await apiService.rechargeBalance(
-      user.id,
-      contractId,
-      amountMinor,
-      state.dashboard.scale,
-    );
-
-    const newNotification: Notification = {
-      id: Math.random().toString(36).substr(2, 9),
-      title: "Balance Recharged",
-      message: `Successfully added ${formatCurrency(amountMinor, state.dashboard.contracts?.[0] ? "CHF" : "CHF", state.dashboard.scale)} to your account.`,
-      timestamp: new Date().toISOString(),
-      read: false,
-      type: "success",
-    };
-    const updatedNotifications = [newNotification, ...state.notifications];
-    await apiService.updateNotifications(updatedNotifications);
-
-    setState((prev) =>
-      prev?.dashboard
-        ? {
-            ...prev,
-            dashboard: {
-              ...prev.dashboard,
-              balance: prev.dashboard.balance + amountMinor,
-            },
-            notifications: updatedNotifications,
-          }
-        : prev,
-    );
+    await rechargeCart([{ contractId, amount, scale: state.dashboard.scale }]);
   };
 
   const rechargeContract = async (
@@ -100,70 +76,24 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     amount: number,
     scale: number,
   ) => {
-    if (!state?.dashboard || !user) return;
-    const amountMinor = toMinorUnits(amount, scale);
-
-    try {
-      await apiService.rechargeBalance(
-        user.id,
-        targetContractId,
-        amountMinor,
-        scale,
-      );
-    } catch {
-      // The transaction endpoint is unavailable in the demo environment.
-    }
-
-    const newNotification: Notification = {
-      id: Math.random().toString(36).substr(2, 9),
-      title: "Balance Recharged",
-      message: `Successfully added ${formatCurrency(amountMinor, "CHF", scale)} to your contract.`,
-      timestamp: new Date().toISOString(),
-      read: false,
-      type: "success",
-    };
-    const updatedNotifications = [newNotification, ...state.notifications];
-    try {
-      await apiService.updateNotifications(updatedNotifications);
-    } catch {
-      // Keep the locally generated receipt notification for the demo.
-    }
-
-    setState((prev) =>
-      prev?.dashboard
-        ? {
-            ...prev,
-            dashboard: {
-              ...prev.dashboard,
-              balance: prev.dashboard.balance + amountMinor,
-              contracts: prev.dashboard.contracts.map((contract) =>
-                contract.contractId === targetContractId
-                  ? {
-                      ...contract,
-                      balanceRaw: contract.balanceRaw + amountMinor,
-                    }
-                  : contract,
-              ),
-            },
-            notifications: updatedNotifications,
-          }
-        : prev,
-    );
+    await rechargeCart([{ contractId: targetContractId, amount, scale }]);
   };
 
   const rechargeCart = async (items: CartRechargeItem[]) => {
     if (!state?.dashboard || !user || items.length === 0) return;
 
-    let totalAddedMinor = 0;
+    if (items.some((item) => !Number.isFinite(item.amount) || item.amount <= 0 ||
+      !state.dashboard?.contracts.some((contract) => contract.contractId === item.contractId))) {
+      throw new Error("Invalid demo recharge");
+    }
     for (const item of items) {
       const amountMinor = toMinorUnits(item.amount, item.scale);
       await apiService.rechargeBalance(
-        271,
+        user.id,
         item.contractId,
         amountMinor,
         item.scale,
       );
-      totalAddedMinor += amountMinor;
     }
 
     const newNotification: Notification = {
@@ -177,31 +107,20 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     const updatedNotifications = [newNotification, ...state.notifications];
     await apiService.updateNotifications(updatedNotifications);
 
-    setState((prev) =>
-      prev?.dashboard
-        ? {
-            ...prev,
-            dashboard: {
-              ...prev.dashboard,
-              balance: prev.dashboard.balance + totalAddedMinor,
-            },
-            notifications: updatedNotifications,
-          }
-        : prev,
-    );
+    await refreshState();
   };
 
   const toggleAlert = async (key: keyof AlertSettings) => {
     if (!state || !user) return;
     const newAlerts = { ...state.alerts, [key]: !state.alerts[key] };
-    const updatedAlerts = await apiService.updateAlerts(271, newAlerts);
+    const updatedAlerts = await apiService.updateAlerts(user.id, newAlerts);
     setState((prev) => (prev ? { ...prev, alerts: updatedAlerts } : null));
   };
 
   const updateAlertSettings = async (settings: Partial<AlertSettings>) => {
     if (!state || !user) return;
     const newAlerts = { ...state.alerts, ...settings };
-    const updatedAlerts = await apiService.updateAlerts(271, newAlerts);
+    const updatedAlerts = await apiService.updateAlerts(user.id, newAlerts);
     setState((prev) => (prev ? { ...prev, alerts: updatedAlerts } : null));
   };
 
@@ -252,19 +171,19 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setState((prev) =>
       prev?.dashboard
         ? {
-            ...prev,
-            dashboard: {
-              ...prev.dashboard,
-              contracts: prev.dashboard.contracts.map((contract) =>
-                contract.contractId === contractId
-                  ? {
-                      ...contract,
-                      displayName: trimmedDisplayName || undefined,
-                    }
-                  : contract,
-              ),
-            },
-          }
+          ...prev,
+          dashboard: {
+            ...prev.dashboard,
+            contracts: prev.dashboard.contracts.map((contract) =>
+              contract.contractId === contractId
+                ? {
+                  ...contract,
+                  displayName: trimmedDisplayName || undefined,
+                }
+                : contract,
+            ),
+          },
+        }
         : prev,
     );
   };
@@ -276,6 +195,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         recharge,
         rechargeContract,
         rechargeCart,
+        refreshState,
         toggleAlert,
         updateAlertSettings,
         addNotification,

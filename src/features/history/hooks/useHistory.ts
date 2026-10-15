@@ -7,6 +7,7 @@ import {
 } from "date-fns";
 import { useEffect, useMemo, useState } from "react";
 import { useApp } from "@/context/AppContext";
+import { useAuth } from "@/context/AuthContext";
 import { apiService } from "@/services/api";
 import type { Transaction } from "@/types";
 import { fromMinorUnits } from "@/types";
@@ -16,7 +17,8 @@ export type FilterType = "all" | "credit" | "debit";
 export type FilterStatus = "all" | "Settled" | "Pending" | "Failed";
 
 export function useHistory(scopedContractId?: number) {
-  const { contractId: defaultContractId } = useApp();
+  const { contractId: defaultContractId, state } = useApp();
+  const { user } = useAuth();
   const contractId = scopedContractId ?? defaultContractId;
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -28,16 +30,19 @@ export function useHistory(scopedContractId?: number) {
   const [filterStatus, setFilterStatus] = useState<FilterStatus>("all");
 
   useEffect(() => {
-    if (!contractId) return;
+    if (!contractId || !user) return;
+    let cancelled = false;
     setIsLoading(true);
     apiService
-      .getTransactions(271, contractId)
+      .getTransactions(user.id, contractId)
       .then((res) => {
+        if (cancelled) return;
         setTransactions(res);
         setIsLoading(false);
       })
-      .catch(() => setIsLoading(false));
-  }, [contractId]);
+      .catch(() => { if (!cancelled) setIsLoading(false); });
+    return () => { cancelled = true; };
+  }, [contractId, user?.id, state?.dashboard?.balance]);
 
   const now = new Date();
   const weekStart = startOfWeek(now);

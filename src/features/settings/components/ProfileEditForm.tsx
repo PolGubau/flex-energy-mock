@@ -3,17 +3,6 @@ import { type ChangeEvent, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/context/AuthContext";
-import { getClient } from "@/lib/smartsphere";
-import { CustomerApiError } from "@/lib/smartsphere/modules/customers";
-
-function resolveCustomerError(err: unknown): string {
-  if (err instanceof CustomerApiError) {
-    if (err.errorCode === "DUPLICATE_EMAIL") return "This email is already in use.";
-    return err.message || "Failed to save. Please try again.";
-  }
-  return "Failed to save. Please try again.";
-}
-
 interface FormState {
   firstName: string;
   lastName: string;
@@ -23,7 +12,7 @@ interface FormState {
 }
 
 export function ProfileEditForm() {
-  const { user } = useAuth();
+  const { user, updateProfile } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -33,7 +22,7 @@ export function ProfileEditForm() {
     firstName: user?.firstName ?? "",
     lastName: user?.lastName ?? "",
     email: user?.email ?? "",
-    phone: "",
+    phone: user?.phone ?? "",
     companyName: user?.companyName ?? "",
   });
 
@@ -46,6 +35,7 @@ export function ProfileEditForm() {
         lastName: user.lastName ?? prev.lastName,
         email: user.email ?? prev.email,
         companyName: user.companyName ?? prev.companyName,
+        phone: user.phone ?? prev.phone,
       }));
     }
   }, [user]);
@@ -60,18 +50,12 @@ export function ProfileEditForm() {
     setIsSaving(true);
     setError(null);
     try {
-      await getClient().customers.createCustomer({
-        firstName: form.firstName || null,
-        lastName: form.lastName || null,
-        email: form.email || null,
-        phone: form.phone || null,
-        companyName: form.companyName || null,
-      });
+      await updateProfile(form);
       setSaved(true);
       setIsOpen(false);
       setTimeout(() => setSaved(false), 2000);
-    } catch (err) {
-      setError(resolveCustomerError(err));
+    } catch {
+      setError("Failed to save demo profile. Please try again.");
     } finally {
       setIsSaving(false);
     }

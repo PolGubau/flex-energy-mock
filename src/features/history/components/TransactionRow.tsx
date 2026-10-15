@@ -3,7 +3,7 @@ import { ArrowDownLeft, ArrowUpRight, FileText, Loader2 } from "lucide-react";
 import type { Key } from "react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { getClient } from "@/lib/smartsphere";
+import { getClient } from "@/demo/client";
 import type { Transaction } from "@/types";
 import { formatCurrency } from "@/types";
 

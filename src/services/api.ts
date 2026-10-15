@@ -1,4 +1,5 @@
-import { getClient, SOURCE_ID } from "../lib/smartsphere";
+import { getClient, SOURCE_ID } from "../demo/client";
+import { readDemoState, updateDemoState } from "../demo/store";
 import type { ApiTransaction } from "../lib/smartsphere/modules/financial";
 import type { GraphicMulti } from "../lib/smartsphere/modules/graphics";
 import type {
@@ -121,7 +122,7 @@ function mapGraphicMultiToMeasures(
     }
 
     return {
-      timestamp: new Date(ts).toISOString(),
+      timestamp: labels[i]?.label ?? new Date(ts).toISOString(),
       value: summedValues[i],
       unit,
     };
@@ -130,15 +131,9 @@ function mapGraphicMultiToMeasures(
   return baseData;
 }
 
-// ─── Local-only state (notifications persist to localStorage) ─────────────────
-const NOTIFICATIONS_KEY = "flex_energy_notifications";
-
+// Notifications share the versioned local demo store with the other data.
 function loadNotifications(): Notification[] {
-  try {
-    return JSON.parse(localStorage.getItem(NOTIFICATIONS_KEY) ?? "null") ?? [];
-  } catch {
-    return [];
-  }
+  return readDemoState().notifications;
 }
 
 // ─── Date Range Validation Helper ─────────────────────────────────────────────
@@ -203,8 +198,7 @@ export function validateAndClampDateRange(
 // ─── Service ───────────────────────────────────────────────────────────────────
 export const apiService = {
   /**
-   * Loads the full app state from the real API.
-   * Requires the customer ID (from the authenticated JWT).
+   * Loads the full app state from bundled JSON and local browser changes.
    */
   async getAppState(customerId: number): Promise<AppState> {
     const client = getClient();
@@ -494,10 +488,6 @@ export const apiService = {
         ? validateAndClampDateRange(rawDateFrom, now, contracts)
         : { dateFrom: rawDateFrom, dateTo: now };
 
-    console.log(
-      `[getGroupedCostsData] period=${period}, msBack=${msBack}, rawFrom=${rawDateFrom.toISOString()}, clampedFrom=${dateFrom.toISOString()}, clampedTo=${dateTo.toISOString()}`,
-    );
-
     // SumMethod: day=3, month=2, year=3 (per senior engineer)
     const sumMethod =
       period === "day" || period === "week"
@@ -561,7 +551,6 @@ export const apiService = {
   async updateNotifications(
     notifications: Notification[],
   ): Promise<Notification[]> {
-    localStorage.setItem(NOTIFICATIONS_KEY, JSON.stringify(notifications));
-    return notifications;
+    return updateDemoState((state) => { state.notifications = structuredClone(notifications); }).notifications;
   },
 };

@@ -1,0 +1,178 @@
+{
+  "user": {
+    "id": 271,
+    "customerId": 271,
+    "email": "demo@flexenergy.example",
+    "firstName": "Alex",
+    "lastName": "Demo",
+    "companyName": "FlexEnergy Demo",
+    "phone": "+41 00 000 00 00",
+    "accessToken": "",
+    "isEmailVerified": true,
+    "is2FAEnabled": false,
+    "is2FAVerified": true
+  },
+  "contracts": [
+    {
+      "contractID": 300,
+      "buContractID": "DEMO-ELEC-001",
+      "displayName": "Home electricity",
+      "serviceStatus": "Active",
+      "balanceRaw": 14250,
+      "averageCost": 475,
+      "forecastTotalCost": 14250,
+      "scale": 2,
+      "currency": "CHF"
+    },
+    {
+      "contractID": 301,
+      "buContractID": "DEMO-GAS-002",
+      "displayName": "Home heating",
+      "serviceStatus": "Warning",
+      "balanceRaw": 1850,
+      "averageCost": 520,
+      "forecastTotalCost": 15600,
+      "scale": 2,
+      "currency": "CHF"
+    },
+    {
+      "contractID": 302,
+      "buContractID": "DEMO-WATER-003",
+      "displayName": "Home water",
+      "serviceStatus": "Active",
+      "balanceRaw": 6400,
+      "averageCost": 160,
+      "forecastTotalCost": 4800,
+      "scale": 2,
+      "currency": "CHF"
+    }
+  ],
+  "alerts": {
+    "lowBalance": true,
+    "peakUsage": false,
+    "startHour": "08:00",
+    "endHour": "22:00"
+  },
+  "notifications": [
+    {
+      "id": "demo-welcome",
+      "title": "Welcome to the demo",
+      "message": "All data is simulated. Changes stay in this browser and no real payments are made.",
+      "read": false,
+      "type": "info"
+    },
+    {
+      "id": "demo-low-balance",
+      "title": "Heating balance is low",
+      "message": "Try a simulated recharge to top up your heating contract.",
+      "read": false,
+      "type": "warning"
+    },
+    {
+      "id": "demo-reading",
+      "title": "Meter reading updated",
+      "message": "Your simulated consumption data is ready to explore.",
+      "read": true,
+      "type": "success"
+    }
+  ],
+  "transactions": [
+    {
+      "daysAgo": 0,
+      "amount": -4.75,
+      "description": "Daily energy consumption",
+      "status": 1
+    },
+    {
+      "daysAgo": 1,
+      "amount": 100,
+      "description": "Demo balance recharge",
+      "status": 1
+    },
+    {
+      "daysAgo": 2,
+      "amount": -5.2,
+      "description": "Daily energy consumption",
+      "status": 1
+    },
+    {
+      "daysAgo": 4,
+      "amount": 50,
+      "description": "Demo recharge awaiting confirmation",
+      "status": 0
+    },
+    {
+      "daysAgo": 7,
+      "amount": -32.5,
+      "description": "Weekly consumption invoice",
+      "status": 1
+    },
+    {
+      "daysAgo": 10,
+      "amount": 25,
+      "description": "Demo declined payment",
+      "status": 2
+    },
+    {
+      "daysAgo": 14,
+      "amount": 150,
+      "description": "Demo balance recharge",
+      "status": 1
+    },
+    {
+      "daysAgo": 21,
+      "amount": -41.3,
+      "description": "Weekly consumption invoice",
+      "status": 1
+    }
+  ],
+  "usage": {
+    "hourly": [
+      0.22, 0.18, 0.16, 0.15, 0.18, 0.35, 0.82, 1.24, 0.95, 0.61, 0.52, 0.68,
+      1.15, 0.85, 0.62, 0.58, 0.94, 1.42, 1.85, 1.63, 1.12, 0.78, 0.45, 0.29
+    ],
+    "daily": [
+      14.2, 12.8, 16.1, 13.5, 15.4, 18.2, 17.6, 13.9, 12.4, 14.8, 16.5, 15.1,
+      19.3, 17.8, 14.5, 13.2, 15.9, 14.7, 16.8, 18.5, 17.2, 13.6, 12.9, 15.3,
+      14.1, 16.2, 19.1, 17.4, 15.6, 14.9
+    ],
+    "monthly": [530, 485, 450, 390, 350, 315, 300, 320, 370, 425, 470, 520],
+    "contractFactors": { "300": 1, "301": 1.4, "302": 0.35 },
+    "costPerKwh": 0.29
+  },
+  "tariffs": [
+    {
+      "tariffId": "demo-flex-green",
+      "tariffName": "Flex Green Demo",
+      "enabled": true,
+      "assigned": true,
+      "currency": "CHF"
+    }
+  ],
+  "tariffRates": [
+    {
+      "tariffId": "demo-flex-green",
+      "tariffRateId": "demo-standard",
+      "validFrom": "2020-01-01T00:00:00.000Z",
+      "validTo": "2099-12-31T23:59:59.000Z",
+      "scale": 3,
+      "amountMinor": 290,
+      "amount": 0.29,
+      "unitOfMeasure": "CHF/kWh",
+      "priority": 1,
+      "assigned": true
+    },
+    {
+      "tariffId": "demo-flex-green",
+      "tariffRateId": "demo-off-peak",
+      "validFrom": "2020-01-01T00:00:00.000Z",
+      "validTo": "2099-12-31T23:59:59.000Z",
+      "scale": 3,
+      "amountMinor": 230,
+      "amount": 0.23,
+      "unitOfMeasure": "CHF/kWh",
+      "priority": 2,
+      "assigned": false
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useApp } from "@/context/AppContext";
-import { getClient } from "@/lib/smartsphere";
+import { getClient } from "@/demo/client";
 
 export type PaymentMethod = {
   id: string;

@@ -1,6 +1,6 @@
 import type React from "react";
 import { createContext, useContext, useEffect, useState } from "react";
-import { clearAuthToken } from "../lib/smartsphere";
+import { readDemoState, updateDemoState } from "../demo/store";
 import type { UserInfo } from "../types";
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
@@ -8,10 +8,11 @@ export interface AuthUser extends UserInfo {
   isEmailVerified: boolean;
   is2FAEnabled: boolean;
   is2FAVerified: boolean;
-  /** Numeric customer ID from the SmartSphere JWT sub claim */
+  /** Simulated customer ID from the bundled JSON. */
   customerId: number;
-  /** Access token for API calls */
+  /** Compatibility field; always empty in the local demo. */
   accessToken: string;
+  phone?: string;
 }
 
 interface AuthContextType {
@@ -20,26 +21,11 @@ interface AuthContextType {
   loginWithGoogle: () => Promise<void>;
   logout: () => Promise<void>;
   forgotPassword: (email: string) => Promise<void>;
+  updateProfile: (profile: Partial<Pick<AuthUser, "firstName" | "lastName" | "email" | "companyName" | "phone">>) => Promise<void>;
   verifyEmail: () => Promise<void>;
   verify2FA: (code: string) => Promise<void>;
   isLoading: boolean;
 }
-
-// ─── Demo user (hardcoded for demo — no real login required) ───────────────────
-const DEMO_CUSTOMER_ID = 271;
-
-const DEMO_USER: AuthUser = {
-  id: DEMO_CUSTOMER_ID,
-  customerId: DEMO_CUSTOMER_ID,
-  email: "demo@flexenergy.com",
-  firstName: "Demo",
-  lastName: "User",
-  companyName: "FlexEnergy Demo",
-  accessToken: "",
-  isEmailVerified: true,
-  is2FAEnabled: false,
-  is2FAVerified: true,
-};
 
 // ─── Context ───────────────────────────────────────────────────────────────────
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -50,17 +36,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // Auto-login with demo user on mount — no credentials needed
   useEffect(() => {
-    setUser(DEMO_USER);
+    setUser(readDemoState().user);
     setIsLoading(false);
   }, []);
 
-  // No-op: demo mode always uses the hardcoded user
+  // Credentials are ignored: demo access only restores the local user.
   const login = async (_email: string, _password: string) => {
-    setUser(DEMO_USER);
+    setUser(readDemoState().user);
   };
 
   const loginWithGoogle = async () => {
-    setUser(DEMO_USER);
+    setUser(readDemoState().user);
   };
 
   const verifyEmail = async () => {
@@ -72,8 +58,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const logout = async () => {
-    clearAuthToken();
     setUser(null);
+  };
+
+  const updateProfile: AuthContextType["updateProfile"] = async (profile) => {
+    const updated = updateDemoState((state) => {
+      state.user = { ...state.user, ...profile };
+    });
+    setUser(updated.user);
   };
 
   const forgotPassword = async (_email: string) => {
@@ -88,6 +80,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         loginWithGoogle,
         logout,
         forgotPassword,
+        updateProfile,
         verifyEmail,
         verify2FA,
         isLoading,

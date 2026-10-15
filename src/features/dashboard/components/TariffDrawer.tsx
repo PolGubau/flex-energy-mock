@@ -4,7 +4,7 @@ import { type ReactNode, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Drawer } from "vaul";
 import { Skeleton } from "@/components/ui/skeleton";
-import { getClient } from "@/lib/smartsphere";
+import { getClient } from "@/demo/client";
 import type {
   TariffDataDto,
   TariffRateDataDto,

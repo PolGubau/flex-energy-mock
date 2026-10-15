@@ -92,14 +92,14 @@ export function RechargeView() {
   const focusedNewBalance =
     selectedContract && focusedAmount !== null
       ? formatCurrency(
-          toMinorUnits(
-            fromMinorUnits(selectedContract.balanceRaw, selectedContract.scale) +
-              focusedAmount,
-            selectedContract.scale,
-          ),
-          selectedContract.currency,
+        toMinorUnits(
+          fromMinorUnits(selectedContract.balanceRaw, selectedContract.scale) +
+          focusedAmount,
           selectedContract.scale,
-        )
+        ),
+        selectedContract.currency,
+        selectedContract.scale,
+      )
       : "";
 
   const handleConfirmRecharge = async () => {
@@ -145,25 +145,23 @@ export function RechargeView() {
     setIsPaying(true);
     try {
       await rechargeCart(checkoutItems);
-    } catch {
-      // Keep the demo payment flow usable when the transaction endpoint is unavailable.
-    } finally {
       clearCart();
-      setIsPaying(false);
       setCartRechargeCompleted(true);
+    } finally {
+      setIsPaying(false);
     }
   };
 
   const isCartFlow = !selectedContract && cartCheckoutOpen;
   const checkoutTotalFormatted = checkoutItems.length
     ? formatCurrency(
-        checkoutItems.reduce(
-          (total, item) => total + toMinorUnits(item.amount, item.scale),
-          0,
-        ),
-        checkoutItems[0].currency,
-        checkoutItems[0].scale,
-      )
+      checkoutItems.reduce(
+        (total, item) => total + toMinorUnits(item.amount, item.scale),
+        0,
+      ),
+      checkoutItems[0].currency,
+      checkoutItems[0].scale,
+    )
     : "CHF 0.00";
 
   const handleSuggest = async () => {
@@ -251,10 +249,10 @@ export function RechargeView() {
                 : isCartFlow
                   ? "Conferma ricarica"
                   : rechargeCompleted
-                ? "Ricarica completata"
-                : focusedAmount !== null
-                  ? "Conferma ricarica"
-                  : t("recharge.title")}
+                    ? "Ricarica completata"
+                    : focusedAmount !== null
+                      ? "Conferma ricarica"
+                      : t("recharge.title")}
             </h2>
             {selectedContract ? (
               <p className="mt-0.5 truncate text-xs font-semibold text-muted-foreground">
@@ -473,11 +471,11 @@ export function RechargeView() {
                   const commodityColors = DASHBOARD_COMMODITY_COLORS[commodityType];
                   const futureBalance = contract
                     ? formatCurrency(
-                        contract.balanceRaw +
-                          toMinorUnits(item.amount, item.scale),
-                        item.currency,
-                        item.scale,
-                      )
+                      contract.balanceRaw +
+                      toMinorUnits(item.amount, item.scale),
+                      item.currency,
+                      item.scale,
+                    )
                     : "--";
                   const isFutureBalanceNegative = contract
                     ? contract.balanceRaw + toMinorUnits(item.amount, item.scale) < 0
@@ -659,50 +657,50 @@ export function RechargeView() {
           </Button>
         </section>
       ) : (
-      <section className="space-y-4">
-        {!selectedContract && (
-          <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-            {t("recharge.contractsTitle")}
-          </h3>
-        )}
-        {isLoading ? (
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-            <ContractCardSkeleton />
-            <ContractCardSkeleton />
-          </div>
-        ) : rechargeContracts.length === 0 ? (
-          <EmptyState
-            icon={FileText}
-            title={t("recharge.noContracts")}
-            description={t("recharge.noContractsDesc")}
-          />
-        ) : (
-          <motion.div
-            className={cn(rechargeContracts.length > 1 && "grid grid-cols-1 xl:grid-cols-2 gap-4")}
-            initial="hidden"
-            animate="visible"
-            variants={{ visible: { transition: { staggerChildren: 0.07 } } }}
-          >
-            {rechargeContracts.map((c) => (
-              <motion.div
-                key={c.contractId}
-                variants={{ hidden: { opacity: 0, y: 18 }, visible: { opacity: 1, y: 0 } }}
-                transition={{ duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
-              >
-                <ContractRechargeCard
-                  contract={c}
-                  cartItem={cart.get(c.contractId)}
-                  onAddToCart={addToCart}
-                  onRemove={removeFromCart}
-                  prefillAmount={prefills.get(c.contractId)}
-                  focused={Boolean(selectedContract)}
-                  onContinue={setFocusedAmount}
-                />
-              </motion.div>
-            ))}
-          </motion.div>
-        )}
-      </section>
+        <section className="space-y-4">
+          {!selectedContract && (
+            <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+              {t("recharge.contractsTitle")}
+            </h3>
+          )}
+          {isLoading ? (
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+              <ContractCardSkeleton />
+              <ContractCardSkeleton />
+            </div>
+          ) : rechargeContracts.length === 0 ? (
+            <EmptyState
+              icon={FileText}
+              title={t("recharge.noContracts")}
+              description={t("recharge.noContractsDesc")}
+            />
+          ) : (
+            <motion.div
+              className={cn(rechargeContracts.length > 1 && "grid grid-cols-1 xl:grid-cols-2 gap-4")}
+              initial="hidden"
+              animate="visible"
+              variants={{ visible: { transition: { staggerChildren: 0.07 } } }}
+            >
+              {rechargeContracts.map((c) => (
+                <motion.div
+                  key={c.contractId}
+                  variants={{ hidden: { opacity: 0, y: 18 }, visible: { opacity: 1, y: 0 } }}
+                  transition={{ duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
+                >
+                  <ContractRechargeCard
+                    contract={c}
+                    cartItem={cart.get(c.contractId)}
+                    onAddToCart={addToCart}
+                    onRemove={removeFromCart}
+                    prefillAmount={prefills.get(c.contractId)}
+                    focused={Boolean(selectedContract)}
+                    onContinue={setFocusedAmount}
+                  />
+                </motion.div>
+              ))}
+            </motion.div>
+          )}
+        </section>
       )}
 
       {/* ── Floating cart trigger ── */}

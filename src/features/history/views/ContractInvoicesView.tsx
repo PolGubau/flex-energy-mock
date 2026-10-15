@@ -13,7 +13,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { EmptyState } from "@/components/ui/empty-state";
 import { TransactionSkeleton } from "@/components/ui/skeleton";
 import { useDashboard } from "@/features/dashboard/hooks/useDashboard";
-import { getClient } from "@/lib/smartsphere";
+import { getClient } from "@/demo/client";
 import { cn } from "@/lib/utils";
 import { formatCurrency, type Transaction } from "@/types";
 import type { FilterStatus } from "../hooks/useHistory";

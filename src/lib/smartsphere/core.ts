@@ -165,7 +165,11 @@ export class HttpCore {
   constructor(private readonly config: SmartSphereClientConfig) {}
 
   private get fetchImpl() {
-    return (this.config.fetch ?? fetch).bind(globalThis);
+    // Legacy SDK retained for reference only. Never allow it to reach a server.
+    const disabledFetch: typeof fetch = async () => {
+      throw new Error("Network access is disabled in the local FlexEnergy demo");
+    };
+    return disabledFetch;
   }
 
   private buildHeaders(extra?: HeadersInit): Headers {

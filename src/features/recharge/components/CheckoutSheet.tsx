@@ -12,6 +12,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { useAuth } from "@/context/AuthContext";
+import { useApp } from "@/context/AppContext";
 import { apiService } from "@/services/api";
 import { formatCurrency, toMinorUnits } from "@/types";
 import type { CartItem } from "../hooks/useRechargeCart";
@@ -47,6 +48,7 @@ interface CheckoutSheetProps {
 // ─── Component ────────────────────────────────────────────────────────────────
 export function CheckoutSheet({ items, totalFormatted, trigger, onSuccess }: CheckoutSheetProps) {
   const { user } = useAuth();
+  const { refreshState } = useApp();
   const [open, setOpen] = useState(false);
   const [cardHolder, setCardHolder] = useState("");
   const [cardNumber, setCardNumber] = useState("");
@@ -79,6 +81,7 @@ export function CheckoutSheet({ items, totalFormatted, trigger, onSuccess }: Che
           cardBrand: brand,
         });
       }
+      await refreshState();
       setSuccess(true);
       onSuccess();
       setTimeout(() => {
@@ -112,6 +115,9 @@ export function CheckoutSheet({ items, totalFormatted, trigger, onSuccess }: Che
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="px-1 pt-2 space-y-5">
+            <p className="rounded-xl bg-primary/10 p-3 text-sm text-primary">
+              Demo payment only. No charge will be made. Use dummy details, never a real card.
+            </p>
             {/* Order summary */}
             <div className="rounded-xl border border-border bg-muted/30 p-4 space-y-2">
               {items.map((item) => (

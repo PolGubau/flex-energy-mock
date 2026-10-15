@@ -3,21 +3,40 @@ import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
-const API_TARGET = "http://10.200.102.146:5265";
-const CONTRACTS_TARGET = "https://rc-test.energydynamics.ch";
-
-export default defineConfig({
-  plugins: [react(), tailwindcss()],
+export default defineConfig(({ command }) => ({
+  plugins: [
+    react(),
+    tailwindcss(),
+    {
+      name: "local-demo-policy",
+      transformIndexHtml() {
+        return [
+          {
+            tag: "meta",
+            attrs: {
+              "http-equiv": "Content-Security-Policy",
+              content: [
+                "default-src 'self'",
+                `script-src 'self'${command === "serve" ? " 'unsafe-inline'" : ""}`,
+                "style-src 'self' 'unsafe-inline'",
+                "font-src 'self'",
+                "img-src 'self' data: blob:",
+                "media-src 'self' blob:",
+                `connect-src ${command === "serve" ? "'self'" : "'none'"}`,
+                "object-src blob:",
+                "base-uri 'none'",
+                "form-action 'none'",
+              ].join("; "),
+            },
+            injectTo: "head-prepend",
+          },
+        ];
+      },
+    },
+  ],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  server: {
-    proxy: {
-      "/Api": { target: API_TARGET, changeOrigin: true },
-      "/api": { target: API_TARGET, changeOrigin: true },
-      "/Contracts": { target: CONTRACTS_TARGET, changeOrigin: true },
-    },
-  },
-});
+}));
