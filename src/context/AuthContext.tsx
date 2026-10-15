@@ -1,5 +1,5 @@
 import type React from "react";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useState } from "react";
 import { readDemoState, updateDemoState } from "../demo/store";
 import type { UserInfo } from "../types";
 
@@ -32,21 +32,20 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  // Auto-login with demo user on mount — no credentials needed
-  useEffect(() => {
-    setUser(readDemoState().user);
-    setIsLoading(false);
-  }, []);
 
   // Credentials are ignored: demo access only restores the local user.
   const login = async (_email: string, _password: string) => {
-    setUser(readDemoState().user);
+    setUser({
+      ...readDemoState().user,
+      accessToken: "",
+      isEmailVerified: true,
+      is2FAEnabled: false,
+      is2FAVerified: true,
+    });
   };
 
   const loginWithGoogle = async () => {
-    setUser(readDemoState().user);
+    await login("", "");
   };
 
   const verifyEmail = async () => {
@@ -83,7 +82,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         updateProfile,
         verifyEmail,
         verify2FA,
-        isLoading,
+        isLoading: false,
       }}
     >
       {children}

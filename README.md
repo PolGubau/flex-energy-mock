@@ -21,7 +21,8 @@ necesita el servidor local para abrirse o recargar, no un backend de datos.
 - Perfil, nombres de contratos, avisos y notificaciones editables localmente.
 - Facturas y recibos PDF generados en memoria, marcados como DEMO.
 - Fuente, imágenes y vídeos incluidos localmente; sin Google Fonts ni CDN.
-- Acceso automático de demo; login, recuperación y verificación no envían nada.
+- Login simulado: **Sign in** entra siempre, con cualquier dato o campos vacíos.
+- Google también es simulado; login, recuperación y verificación no envían nada.
 - Nunca se cobra dinero ni se guardan los datos de tarjeta introducidos.
 
 Los cambios se guardan en `localStorage`, clave `flex_energy_demo_v1`.

@@ -164,7 +164,12 @@ export function LoginView({ onShowForgot }: { onShowForgot: () => void }) {
               </p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <p className="rounded-xl bg-primary/10 px-4 py-3 text-xs text-primary">
+              DEMO · Enter any details or leave the fields blank. No real account,
+              internet connection or VPN is needed. Google sign-in is simulated too.
+            </p>
+
+            <form onSubmit={handleSubmit} noValidate className="space-y-4">
               <div className="space-y-1.5">
                 <label
                   htmlFor="email"
@@ -175,7 +180,7 @@ export function LoginView({ onShowForgot }: { onShowForgot: () => void }) {
                 <Input
                   id="email"
                   type="email"
-                  required
+                  autoComplete="off"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="alex@example.com"
@@ -193,7 +198,7 @@ export function LoginView({ onShowForgot }: { onShowForgot: () => void }) {
                 <Input
                   id="password"
                   type="password"
-                  required
+                  autoComplete="off"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"

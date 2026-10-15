@@ -1,13 +1,26 @@
 import { act, renderHook, waitFor } from "@testing-library/react";
-import type { ReactNode } from "react";
+import { type ReactNode, useEffect, useRef } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { readDemoState, resetDemoState } from "@/demo/store";
 import { AppProvider, useApp } from "./AppContext";
 import { AuthProvider, useAuth } from "./AuthContext";
 
+function EnterDemo() {
+  const { login } = useAuth();
+  const entered = useRef(false);
+  useEffect(() => {
+    if (!entered.current) {
+      entered.current = true;
+      void login("", "");
+    }
+  }, [login]);
+  return null;
+}
+
 function wrapper({ children }: { children: ReactNode }) {
   return (
     <AuthProvider>
+      <EnterDemo />
       <AppProvider>{children}</AppProvider>
     </AuthProvider>
   );
