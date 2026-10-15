@@ -1,0 +1,96 @@
+﻿@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap");
+@import "tailwindcss";
+@plugin "tailwindcss-animate";
+
+/* --- MD3 Expressive Design tokens ---------------------------- */
+:root {
+  /* Surfaces — warm-tinted neutrals (MD3 background: #fefbff) */
+  --background: oklch(0.99 0.004 285);
+  --foreground: oklch(0.18 0.04 285);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.18 0.04 285);
+
+  /* Primary — MD3 blue (#2563eb → oklch ~0.53 0.195 258) */
+  --primary: oklch(0.53 0.195 258);
+  --primary-foreground: oklch(1 0 0);
+
+  /* Secondary — muted blue-slate (MD3 secondary) */
+  --secondary: oklch(0.54 0.06 258);
+  --secondary-foreground: oklch(1 0 0);
+  --secondary-container: oklch(0.93 0.03 258);
+  --secondary-container-foreground: oklch(0.2 0.06 258);
+
+  /* Tertiary — cyan-teal accent */
+  --tertiary: oklch(0.62 0.14 200);
+  --tertiary-foreground: oklch(1 0 0);
+  --tertiary-container: oklch(0.95 0.04 200);
+  --tertiary-container-foreground: oklch(0.25 0.08 200);
+
+  /* Muted / surface variants */
+  --muted: oklch(0.945 0.008 285);
+  --muted-foreground: oklch(0.555 0.018 285);
+
+  /* Borders & inputs */
+  --border: oklch(0.9 0.012 285);
+  --input: oklch(0.96 0.006 285);
+  --ring: oklch(0.5 0.23 285);
+
+  /* Semantic states */
+  --destructive: oklch(0.58 0.21 25);
+  --destructive-foreground: oklch(1 0 0);
+  --success: oklch(0.6 0.155 155);
+  --success-foreground: oklch(1 0 0);
+  --warning: oklch(0.7 0.16 65);
+  --warning-foreground: oklch(1 0 0);
+}
+
+.dark {
+  --background: oklch(0.18 0.03 285);
+  --foreground: oklch(0.945 0.008 285);
+}
+
+/* --- Tailwind v4 theme registration --------------------------- */
+@theme {
+  --font-sans: "Poppins", ui-sans-serif, system-ui, sans-serif;
+  --font-heading: "Poppins", ui-sans-serif, system-ui, sans-serif;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary-container: var(--secondary-container);
+  --color-secondary-container-foreground: var(--secondary-container-foreground);
+
+  --color-tertiary: var(--tertiary);
+  --color-tertiary-foreground: var(--tertiary-foreground);
+  --color-tertiary-container: var(--tertiary-container);
+  --color-tertiary-container-foreground: var(--tertiary-container-foreground);
+
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+
+  --breakpoint-xs: 480px;
+}
+
+body {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

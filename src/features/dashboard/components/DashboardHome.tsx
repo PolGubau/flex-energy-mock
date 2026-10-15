@@ -1,0 +1,266 @@
+import { ChevronRight, Droplets, Flame, QrCode, Zap } from "lucide-react";
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
+import { EmptyState } from "@/components/ui/empty-state";
+import {
+  buildDashboardQRPayload,
+  QRCodeSheet,
+} from "@/components/ui/qr-code-sheet";
+import { ContractCardSkeleton } from "@/components/ui/skeleton";
+import { useAuth } from "@/context/AuthContext";
+import { formatCurrency } from "@/types";
+import type { ContractSummary } from "../hooks/useDashboard";
+import { type CommodityType, getCommodityType } from "./ContractCard";
+
+interface DashboardHomeProps {
+  totalBalanceFormatted: string;
+  contracts: ContractSummary[];
+  isLoading: boolean;
+}
+
+const SERVICES: Array<{
+  type: CommodityType;
+  label: string;
+  Icon: typeof Zap;
+  cardClass: string;
+  iconBg: string;
+  iconColor: string;
+}> = [
+  {
+    type: "electricity",
+    label: "Electricity",
+    Icon: Zap,
+    cardClass: "bg-primary/5 text-primary",
+    iconBg: "bg-emerald-100",
+    iconColor: "text-emerald-600",
+  },
+  {
+    type: "gas",
+    label: "Gas",
+    Icon: Flame,
+    cardClass: "bg-muted text-muted-foreground",
+    iconBg: "bg-sky-100",
+    iconColor: "text-sky-600",
+  },
+  {
+    type: "water",
+    label: "Water",
+    Icon: Droplets,
+    cardClass: "bg-muted text-muted-foreground",
+    iconBg: "bg-violet-100",
+    iconColor: "text-violet-600",
+  },
+];
+
+const SERVICE_BY_TYPE: Record<CommodityType, (typeof SERVICES)[number]> = {
+  electricity: SERVICES[0],
+  gas: SERVICES[1],
+  water: SERVICES[2],
+};
+
+function getContractStatusClass(serviceStatus: string) {
+  switch (serviceStatus.toLowerCase()) {
+    case "active":
+    case "normal":
+    case "normalstate":
+      return "bg-emerald-50 text-emerald-700";
+    case "warning":
+    case "grace":
+    case "gracestate":
+      return "bg-amber-50 text-amber-700";
+    default:
+      return "bg-rose-50 text-rose-700";
+  }
+}
+
+function getContractStatusKey(serviceStatus: string) {
+  switch (serviceStatus.toLowerCase()) {
+    case "active":
+    case "normal":
+    case "normalstate":
+      return "active";
+    case "warning":
+    case "grace":
+    case "gracestate":
+      return "reduced";
+    case "suspended":
+    case "lockstate":
+    case "closed":
+      return "suspended";
+    default:
+      return "unknown";
+  }
+}
+
+export function DashboardHome({
+  totalBalanceFormatted,
+  contracts,
+  isLoading,
+}: DashboardHomeProps) {
+  const navigate = useNavigate();
+  const { t } = useTranslation();
+  const { user } = useAuth();
+  const [qrOpen, setQrOpen] = useState(false);
+
+  return (
+    <div className="mx-auto w-full max-w-4xl space-y-8 pb-8 sm:space-y-10">
+      {isLoading ? (
+        <ContractCardSkeleton />
+      ) : (
+        <>
+          <div className="flex flex-col gap-6 px-1 sm:flex-row sm:items-end sm:justify-between sm:gap-8">
+            <div>
+              <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
+                {t("dashboard.totalBalance")}
+              </p>
+              <p className="mt-2 text-4xl font-semibold leading-none tracking-tight tabular-nums text-foreground sm:text-5xl">
+                {totalBalanceFormatted}
+              </p>
+            </div>
+
+            <section
+              className="grid grid-cols-2 gap-3 sm:w-[min(100%,22rem)]"
+              aria-label={t("nav.recharge")}
+            >
+              <button
+                type="button"
+                onClick={() => navigate("/recharge")}
+                className="inline-flex h-11 min-w-0 items-center justify-center gap-2 rounded-xl bg-primary px-3 text-sm font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary/90"
+              >
+                <Zap className="size-4" />
+                {t("nav.recharge")}
+              </button>
+              <button
+                type="button"
+                onClick={() => setQrOpen(true)}
+                className="inline-flex h-11 min-w-0 items-center justify-center gap-2 rounded-xl border border-border bg-card px-3 text-sm font-medium text-foreground shadow-sm transition-colors hover:bg-muted/50"
+              >
+                <QrCode className="size-4" />
+                {t("recharge.qr")}
+              </button>
+            </section>
+          </div>
+
+          <section
+            className="grid grid-cols-3 divide-x divide-border overflow-hidden rounded-xl border border-border/70 bg-card"
+            aria-label={t("dashboard.commodity.all")}
+          >
+            {SERVICES.map(({ type, Icon, cardClass }) => {
+              const serviceContracts = contracts.filter(
+                (contract) => getCommodityType(contract.contractId) === type,
+              );
+              const rawBalance = serviceContracts.reduce(
+                (sum, contract) => sum + contract.balanceRaw,
+                0,
+              );
+              const reference = serviceContracts[0];
+              const balance = reference
+                ? formatCurrency(
+                    rawBalance,
+                    reference.currency,
+                    reference.scale,
+                  )
+                : "--";
+
+              return (
+                <button
+                  key={type}
+                  type="button"
+                  onClick={() => navigate(`/contracts?service=${type}`)}
+                  className={`min-w-0 px-3 py-4 text-center transition-colors hover:bg-muted/40 active:bg-muted/60 ${cardClass}`}
+                >
+                  <span className="mx-auto mb-2.5 flex size-9 items-center justify-center rounded-full bg-card/70 shadow-sm">
+                    <Icon className="size-4" />
+                  </span>
+                  <p className="truncate text-xs font-medium">
+                    {t(`dashboard.commodity.${type}`)}
+                  </p>
+                  <p className="mt-1 truncate text-sm font-semibold tabular-nums">
+                    {balance}
+                  </p>
+                </button>
+              );
+            })}
+          </section>
+
+          <section aria-labelledby="contracts-heading">
+            <div className="mb-4 px-1">
+              <h2
+                id="contracts-heading"
+                className="text-lg font-semibold tracking-tight text-foreground"
+              >
+                {t("dashboard.yourContracts")}
+              </h2>
+            </div>
+
+            {contracts.length > 0 ? (
+              <div className="space-y-3">
+                {contracts.map((contract) => {
+                  const type = getCommodityType(contract.contractId);
+                  const service = SERVICE_BY_TYPE[type];
+                  const Icon = service.Icon;
+                  const label =
+                    contract.displayName ||
+                    contract.buContractId ||
+                    `Contract #${contract.contractId}`;
+                  const statusKey = getContractStatusKey(
+                    contract.serviceStatus,
+                  );
+
+                  return (
+                    <button
+                      key={contract.contractId}
+                      type="button"
+                      onClick={() =>
+                        navigate(`/contracts/${contract.contractId}`)
+                      }
+                      className="flex w-full items-center gap-4 border-b border-border/70 px-1 py-4 text-left transition-colors hover:bg-muted/40 sm:px-2"
+                    >
+                      <span
+                        className={`flex size-11 shrink-0 items-center justify-center rounded-full ${service.iconBg}`}
+                      >
+                        <Icon className={`size-5 ${service.iconColor}`} />
+                      </span>
+                      <span className="min-w-0 flex-1">
+                        <span className="block truncate text-sm font-medium text-foreground">
+                          {label}
+                        </span>
+                        <span className="mt-0.5 block truncate text-[11px] text-muted-foreground">
+                          {contract.buContractId ?? `CO-${contract.contractId}`}
+                        </span>
+                        <span className="mt-2 block text-sm font-semibold tabular-nums text-foreground">
+                          {contract.balanceFormatted}
+                        </span>
+                      </span>
+                      <span className="flex shrink-0 flex-col items-end gap-3">
+                        <span
+                          className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${getContractStatusClass(contract.serviceStatus)}`}
+                        >
+                          {t(`dashboard.status.${statusKey}`)}
+                        </span>
+                        <ChevronRight className="size-4 text-muted-foreground" />
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            ) : (
+              <EmptyState
+                icon={Zap}
+                title={t("dashboard.noContracts")}
+                description={t("dashboard.noContractsYet")}
+              />
+            )}
+          </section>
+        </>
+      )}
+      <QRCodeSheet
+        open={qrOpen}
+        onOpenChange={setQrOpen}
+        title={t("qr.ricarica", "Recharge")}
+        payload={buildDashboardQRPayload(user?.id ?? 0)}
+      />
+    </div>
+  );
+}
