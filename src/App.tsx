@@ -14,7 +14,6 @@ import {
 } from "react-router-dom";
 import { BottomNav } from "@/components/layout/bottom-nav";
 import { Header } from "@/components/layout/header";
-import { DemoBanner } from "@/components/layout/DemoBanner";
 import { AppLoadingScreen } from "@/components/ui/app-loading-screen";
 import { ErrorBoundary } from "@/components/ui/error-boundary";
 import { AppProvider, useApp } from "@/context/AppContext";
@@ -128,7 +127,6 @@ function MainContent() {
           className={`flex-1 ${isDashboard ? "pt-22" : "pt-0"} lg:pt-6 pb-20 lg:pb-10 px-4 lg:px-10`}
         >
           <div className="max-w-2xl mx-auto lg:max-w-5xl lg:mx-0">
-            <DemoBanner />
             <ErrorBoundary>
               <AnimatedRoutes />
             </ErrorBoundary>

@@ -15,6 +15,7 @@ import { type CommodityType, getCommodityType } from "./ContractCard";
 
 interface DashboardHomeProps {
   totalBalanceFormatted: string;
+  totalBalanceRaw: number | null;
   contracts: ContractSummary[];
   isLoading: boolean;
 }
@@ -95,6 +96,7 @@ function getContractStatusKey(serviceStatus: string) {
 
 export function DashboardHome({
   totalBalanceFormatted,
+  totalBalanceRaw,
   contracts,
   isLoading,
 }: DashboardHomeProps) {
@@ -109,41 +111,43 @@ export function DashboardHome({
         <ContractCardSkeleton />
       ) : (
         <>
-          <div className="flex flex-col gap-6 px-1 sm:flex-row sm:items-end sm:justify-between sm:gap-8">
-            <div>
-              <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
-                {t("dashboard.totalBalance")}
-              </p>
-              <p className="mt-2 text-4xl font-semibold leading-none tracking-tight tabular-nums text-foreground sm:text-5xl">
-                {totalBalanceFormatted}
-              </p>
-            </div>
-
-            <section
-              className="grid grid-cols-2 gap-3 sm:w-[min(100%,22rem)]"
-              aria-label={t("nav.recharge")}
+          <section
+            className={`rounded-xl px-5 py-3.5 ring-1 ${totalBalanceRaw !== null && totalBalanceRaw < 0 ? "bg-rose-50 ring-rose-100" : "bg-emerald-50 ring-emerald-100"}`}
+          >
+            <p
+              className={`text-xs font-medium ${totalBalanceRaw !== null && totalBalanceRaw < 0 ? "text-rose-700/75" : "text-emerald-700/75"}`}
             >
-              <button
-                type="button"
-                onClick={() => navigate("/recharge")}
-                className="inline-flex h-11 min-w-0 items-center justify-center gap-2 rounded-xl bg-primary px-3 text-sm font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary/90"
-              >
-                <Zap className="size-4" />
-                {t("nav.recharge")}
-              </button>
-              <button
-                type="button"
-                onClick={() => setQrOpen(true)}
-                className="inline-flex h-11 min-w-0 items-center justify-center gap-2 rounded-xl border border-border bg-card px-3 text-sm font-medium text-foreground shadow-sm transition-colors hover:bg-muted/50"
-              >
-                <QrCode className="size-4" />
-                {t("recharge.qr")}
-              </button>
-            </section>
-          </div>
+              {t("dashboard.totalBalance")}
+            </p>
+            <p className="mt-1 text-2xl font-bold tabular-nums text-foreground">
+              {totalBalanceFormatted}
+            </p>
+          </section>
 
           <section
-            className="grid grid-cols-3 divide-x divide-border overflow-hidden rounded-xl border border-border/70 bg-card"
+            className="grid grid-cols-2 gap-3"
+            aria-label={t("nav.recharge")}
+          >
+            <button
+              type="button"
+              onClick={() => navigate("/recharge")}
+              className="inline-flex h-12 min-w-0 items-center justify-center gap-2 rounded-xl bg-primary px-3 text-sm font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary/90"
+            >
+              <Zap className="size-4" />
+              {t("nav.recharge")}
+            </button>
+            <button
+              type="button"
+              onClick={() => setQrOpen(true)}
+              className="inline-flex h-12 min-w-0 items-center justify-center gap-2 rounded-xl border border-border bg-card px-3 text-sm font-medium text-foreground shadow-sm transition-colors hover:bg-muted/50"
+            >
+              <QrCode className="size-4" />
+              {t("recharge.qr")}
+            </button>
+          </section>
+
+          <section
+            className="grid grid-cols-3 gap-2.5"
             aria-label={t("dashboard.commodity.all")}
           >
             {SERVICES.map(({ type, Icon, cardClass }) => {
@@ -168,7 +172,7 @@ export function DashboardHome({
                   key={type}
                   type="button"
                   onClick={() => navigate(`/contracts?service=${type}`)}
-                  className={`min-w-0 px-3 py-4 text-center transition-colors hover:bg-muted/40 active:bg-muted/60 ${cardClass}`}
+                  className={`min-w-0 rounded-xl px-2 py-3.5 text-center ring-1 transition-transform active:scale-[.98] ${cardClass}`}
                 >
                   <span className="mx-auto mb-2.5 flex size-9 items-center justify-center rounded-full bg-white/65">
                     <Icon className="size-4" />
@@ -215,7 +219,7 @@ export function DashboardHome({
                       onClick={() =>
                         navigate(`/contracts/${contract.contractId}`)
                       }
-                      className="flex w-full items-center gap-4 border-b border-border/70 px-1 py-4 text-left transition-colors hover:bg-muted/40 sm:px-2"
+                      className="flex w-full items-center gap-4 rounded-xl border border-border/70 bg-card px-4 py-3.5 text-left shadow-sm transition-colors hover:bg-muted/40"
                     >
                       <span
                         className={`flex size-11 shrink-0 items-center justify-center rounded-full ${service.iconBg}`}

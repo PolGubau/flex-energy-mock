@@ -2,11 +2,13 @@
 import { useDashboard } from "../hooks/useDashboard";
 
 export function DashboardView() {
-  const { totalBalanceFormatted, contracts, isLoading } = useDashboard();
+  const { dashboard, totalBalanceFormatted, contracts, isLoading } =
+    useDashboard();
 
   return (
     <DashboardHome
       totalBalanceFormatted={totalBalanceFormatted}
+      totalBalanceRaw={dashboard?.balance ?? null}
       contracts={contracts}
       isLoading={isLoading}
     />
