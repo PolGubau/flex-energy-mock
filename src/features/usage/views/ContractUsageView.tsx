@@ -1,8 +1,10 @@
-import { ArrowLeft, BarChart3 } from "lucide-react";
+import { ArrowLeft, BarChart3, LineChart } from "lucide-react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { EmptyState } from "@/components/ui/empty-state";
 import { ChartSkeleton } from "@/components/ui/skeleton";
+import { getCommodityType } from "@/features/dashboard/components/ContractCard";
 import { cn } from "@/lib/utils";
 import { UsageChart } from "../components/UsageChart";
 import { type UsagePeriod, useUsage } from "../hooks/useUsage";
@@ -12,6 +14,7 @@ const PERIODS: UsagePeriod[] = ["day", "week", "month", "year"];
 export function ContractUsageView() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [chartType, setChartType] = useState<"bar" | "line">("line");
   const { contractId: routeContractId } = useParams();
   const parsedContractId = Number(routeContractId);
   const contractId = Number.isFinite(parsedContractId)
@@ -32,6 +35,10 @@ export function ContractUsageView() {
   } = useUsage(contractId);
   const contract = contracts.find((item) => item.contractId === contractId);
   const contractLabel = contract?.label ?? t("common.contract");
+  const usageUnit =
+    contractId !== undefined && getCommodityType(contractId) === "water"
+      ? "m³"
+      : "kWh";
 
   return (
     <main className="space-y-5 pb-8 pt-4">
@@ -85,13 +92,44 @@ export function ContractUsageView() {
               {t("usage.totalConsumption")}
             </p>
             <p className="mt-1 text-4xl font-bold tracking-tight text-foreground tabular-nums">
-              {totalUsage} <span className="text-base font-semibold">kWh</span>
+              {totalUsage}{" "}
+              <span className="text-base font-semibold">{usageUnit}</span>
             </p>
             <p className="mt-1 text-xs text-muted-foreground">
-              Ø {avgUsage} kWh · {t(`usage.periods.${period}`).toLowerCase()}
+              Ø {avgUsage} {usageUnit} ·{" "}
+              {t(`usage.periods.${period}`).toLowerCase()}
             </p>
           </div>
-          <BarChart3 className="mt-1 size-5 text-primary" />
+          <div className="flex gap-1">
+            <button
+              type="button"
+              onClick={() => setChartType("bar")}
+              aria-pressed={chartType === "bar"}
+              className={cn(
+                "rounded-lg p-2 transition-colors",
+                chartType === "bar"
+                  ? "bg-muted/40 text-primary"
+                  : "text-muted-foreground hover:text-foreground",
+              )}
+              title={t("usage.barChart")}
+            >
+              <BarChart3 className="size-4" />
+            </button>
+            <button
+              type="button"
+              onClick={() => setChartType("line")}
+              aria-pressed={chartType === "line"}
+              className={cn(
+                "rounded-lg p-2 transition-colors",
+                chartType === "line"
+                  ? "bg-muted/40 text-primary"
+                  : "text-muted-foreground hover:text-foreground",
+              )}
+              title={t("usage.lineChart")}
+            >
+              <LineChart className="size-4" />
+            </button>
+          </div>
         </div>
 
         <div className="mt-5">
@@ -109,8 +147,10 @@ export function ContractUsageView() {
             <UsageChart
               data={data}
               period={period}
+              chartType={chartType}
               formatXAxis={formatXAxis}
               mode="kwh"
+              usageUnit={usageUnit}
               highlightPeak
             />
           )}
@@ -127,16 +167,22 @@ export function ContractUsageView() {
         <dl className="divide-y divide-border/60 rounded-2xl bg-card px-4 shadow-sm">
           <div className="flex items-center justify-between py-3">
             <dt className="text-sm text-muted-foreground">{t("usage.peak")}</dt>
-            <dd className="text-sm font-semibold text-foreground">{peakLabel}</dd>
+            <dd className="text-sm font-semibold text-foreground">
+              {peakLabel}
+            </dd>
           </div>
           <div className="flex items-center justify-between py-3">
             <dt className="text-sm text-muted-foreground">{t("usage.min")}</dt>
-            <dd className="text-sm font-semibold text-foreground">{minLabel}</dd>
+            <dd className="text-sm font-semibold text-foreground">
+              {minLabel}
+            </dd>
           </div>
           <div className="flex items-center justify-between py-3">
-            <dt className="text-sm text-muted-foreground">{t("usage.range")}</dt>
+            <dt className="text-sm text-muted-foreground">
+              {t("usage.range")}
+            </dt>
             <dd className="text-sm font-semibold text-foreground">
-              {rangeValue} kWh
+              {rangeValue} {usageUnit}
             </dd>
           </div>
         </dl>

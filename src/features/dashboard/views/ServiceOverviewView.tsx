@@ -103,7 +103,7 @@ export function ServiceOverviewView() {
       )
     : "--";
   const totalBalanceClass =
-    balanceRaw < 0 ? "text-foreground" : service.balanceClass;
+    balanceRaw < 0 ? "text-rose-700" : service.balanceClass;
 
   return (
     <div className="-mx-4 min-h-[calc(100vh-5rem)] bg-background pb-24 lg:mx-0 lg:min-h-0 lg:pb-0">
@@ -127,9 +127,7 @@ export function ServiceOverviewView() {
             >
               <ArrowLeft className="size-4" />
             </button>
-            <p className="truncate text-sm font-semibold">
-              {t("nav.home")}
-            </p>
+            <p className="truncate text-sm font-semibold">{t("nav.home")}</p>
           </div>
           <div className="flex justify-end gap-1">
             <button
@@ -176,7 +174,7 @@ export function ServiceOverviewView() {
             <button
               type="button"
               onClick={() => navigate("/recharge")}
-              className="flex w-full items-center justify-between rounded-xl bg-card px-4 py-3.5 text-left shadow-sm ring-1 ring-border"
+              className={`flex w-full items-center justify-between rounded-xl px-4 py-3.5 text-left shadow-sm ring-1 ${balanceRaw < 0 ? "bg-rose-50 ring-rose-100" : "bg-card ring-border"}`}
             >
               <span>
                 <span className="block text-xs font-medium text-muted-foreground">
@@ -211,7 +209,9 @@ export function ServiceOverviewView() {
                     const label =
                       contract.displayName ??
                       contract.buContractId ??
-                      `Contract #${contract.contractId}`;
+                      t("dashboard.contractFallback", {
+                        id: contract.contractId,
+                      });
 
                     return (
                       <button
@@ -220,7 +220,7 @@ export function ServiceOverviewView() {
                         onClick={() =>
                           navigate(`/contracts/${contract.contractId}`)
                         }
-                        className="flex w-full items-center gap-3 rounded-xl bg-card px-3.5 py-3 text-left shadow-sm ring-1 ring-border transition-colors hover:bg-muted/40"
+                        className={`flex w-full items-center gap-3 rounded-xl px-3.5 py-3 text-left shadow-sm ring-1 transition-colors ${contract.balanceRaw < 0 ? "bg-rose-50 ring-rose-100 hover:bg-rose-100/70" : "bg-card ring-border hover:bg-muted/40"}`}
                       >
                         <span
                           className={`flex size-11 shrink-0 items-center justify-center rounded-full ${service.iconBg}`}
@@ -236,7 +236,7 @@ export function ServiceOverviewView() {
                               `CO-${contract.contractId}`}
                           </span>
                           <span
-                            className={`mt-1 block text-sm font-bold tabular-nums ${contract.balanceRaw < 0 ? "text-foreground" : service.balanceClass}`}
+                            className={`mt-1 block text-sm font-bold tabular-nums ${contract.balanceRaw < 0 ? "text-rose-700" : service.balanceClass}`}
                           >
                             {contract.balanceFormatted}
                           </span>

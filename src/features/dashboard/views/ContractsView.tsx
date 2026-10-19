@@ -404,10 +404,17 @@ export function ContractsView() {
         <QRCodeSheet
           open={contractQROpen}
           onOpenChange={setContractQROpen}
-          title={selectedContract.buContractId ?? `#${selectedContract.contractId}`}
-          description={t("qr.contractDesc", "Scan to access this contract")}
-          payload={buildContractQRPayload(user?.id ?? 0, selectedContract.contractId)}
-          contractName={selectedContract.buContractId ?? `#${selectedContract.contractId}`}
+          title={
+            selectedContract.buContractId ?? `#${selectedContract.contractId}`
+          }
+          description={t("qr.contractDesc")}
+          payload={buildContractQRPayload(
+            user?.id ?? 0,
+            selectedContract.contractId,
+          )}
+          contractName={
+            selectedContract.buContractId ?? `#${selectedContract.contractId}`
+          }
         />
       )}
     </>

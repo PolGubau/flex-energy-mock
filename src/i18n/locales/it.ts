@@ -56,7 +56,7 @@ const it: Translations = {
     incorrectCredentials: "Email o password non corretti. Riprova.",
     energyManagement: "Piattaforma di gestione energetica",
     hero: {
-      title: "La tua energia,\nnas tue mani.",
+      title: "La tua energia,\nnelle tue mani.",
       subtitle:
         "Monitora i consumi, ricarica il saldo e resta in controllo — ovunque e sempre.",
       thisWeek: "Questa settimana",
@@ -126,10 +126,11 @@ const it: Translations = {
     },
     detail: {
       notFound: "Contratto non trovato",
-      notFoundDesc: "Questo contratto non e piu disponibile.",
+      notFoundDesc: "Questo contratto non è più disponibile.",
       backToContracts: "Torna ai contratti",
       currentBalance: "Saldo attuale",
       nextInvoice: "Prossima fattura",
+      balanceDuration: "Saldo disponibile per",
       averageConsumption: "Consumo medio",
       perDay: "/giorno",
       actionsAndDetails: "Azioni e dettagli",
@@ -142,7 +143,11 @@ const it: Translations = {
       editDisplayName: "Modifica nome del contratto",
       displayNameError: "Impossibile salvare il nome del contratto. Riprova.",
       contractCode: "Codice contratto: {{code}}",
+      contractCodeLabel: "Codice contratto",
+      contractInformation: "Informazioni sul contratto",
+      balanceInformation: "Informazioni sul saldo",
     },
+    contractFallback: "Contratto n. {{id}}",
     commodity: {
       all: "Tutti",
       electricity: "Elettricità",
@@ -221,8 +226,28 @@ const it: Translations = {
     tapToApply: "Tocca per applicare",
     coversDays: "~{{count}} giorni di copertura",
     contractsTitle: "I tuoi contratti",
+    processingTitle: "Pagamento in elaborazione",
+    processingDesc: "Stiamo confermando in modo sicuro la tua ricarica.",
+    processingPayment: "Conferma del pagamento",
+    processingBalance: "Il saldo verrà aggiornato alla conferma del pagamento.",
     noContracts: "Nessun contratto trovato",
     noContractsDesc: "Non ci sono contratti attivi associati al tuo account.",
+    confirmationTitle: "Conferma ricarica",
+    completedTitle: "Ricarica completata",
+    selectedContracts: "{{count}} contratti selezionati",
+    completedContracts: "{{count}} contratti ricaricati",
+    completedDesc: "Le ricariche sono state completate con successo.",
+    completedSingleDesc: "La tua ricarica è stata completata con successo.",
+    rechargeAmount: "Importo ricarica",
+    distributedOver: "Distribuito su {{count}} contratti",
+    currentBalanceValue: "Saldo attuale {{amount}}",
+    newBalance: "Nuovo saldo",
+    newAvailableBalance: "Nuovo saldo disponibile",
+    service: "Servizio",
+    confirmAndPay: "Conferma e paga",
+    returnHome: "Torna alla home",
+    returnToContract: "Torna al contratto",
+    amountFor: "Importo per {{label}}",
   },
 
   cart: {
@@ -279,13 +304,17 @@ const it: Translations = {
   },
 
   qr: {
-    scanDescription: "Usa questo codice per ricaricare rapidamente.",
-    scanHint: "Inquadralo con l'app FlexEnergy.",
+    scanDescription:
+      "Mostra questo codice allo sportello per effettuare una ricarica.",
+    scanHint: "Mostra questo QR al personale al banco.",
     contract: "Contratto {{contract}}",
     rechargeTitle: "Il tuo QR per la ricarica",
     operatorHint:
-      "Mostra questo QR all'operatore dello sportello. L'importo verra inserito direttamente da lui.",
+      "L'operatore dello sportello scansionerà questo QR per identificare il tuo account o contratto e proseguire con la ricarica.",
     share: "Condividi QR",
+    contractDesc: "Scansiona per accedere a questo contratto",
+    openContract: "Codice QR del contratto",
+    recharge: "Ricarica",
   },
 
   settings: {
@@ -308,6 +337,12 @@ const it: Translations = {
       personal: "Dati personali",
       account: "Account",
       security: "Sicurezza",
+      edit: "Modifica profilo",
+      editTitle: "Modifica profilo",
+      saveChanges: "Salva modifiche",
+      saved: "Salvato",
+      saveError: "Impossibile salvare il profilo demo. Riprova.",
+      companyName: "Nome azienda",
     },
     notifications: {
       title: "Notifiche",
@@ -318,6 +353,27 @@ const it: Translations = {
       monthlyReportDesc: "Ricevi il riepilogo mensile dei consumi",
       threshold: "Soglia di avviso (CHF)",
       save: "Salva impostazioni avvisi",
+      demo: {
+        "demo-welcome": {
+          title: "Benvenuto nella demo",
+          message:
+            "Tutti i dati sono simulati. Le modifiche restano in questo browser e non vengono effettuati pagamenti reali.",
+        },
+        "demo-low-balance": {
+          title: "Saldo riscaldamento basso",
+          message:
+            "Prova una ricarica simulata per ricaricare il contratto del riscaldamento.",
+        },
+        "demo-reading": {
+          title: "Lettura contatore aggiornata",
+          message: "I dati di consumo simulati sono pronti da esplorare.",
+        },
+      },
+      recharge: {
+        title: "Saldo ricaricato",
+        message_one: "Ricarica completata per {{count}} contratto.",
+        message_other: "Ricarica completata per {{count}} contratti.",
+      },
     },
     alerts: {
       title: "Soglie e avvisi",
@@ -346,6 +402,7 @@ const it: Translations = {
       en: "English",
       it: "Italiano",
       de: "Deutsch",
+      fr: "Français",
     },
     exports: {
       title: "Esportazioni",

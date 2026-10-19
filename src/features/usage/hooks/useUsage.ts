@@ -16,7 +16,7 @@ export function useUsage(scopedContractId?: number) {
   const isScoped = scopedContractId !== undefined;
   const [period, setPeriodState] = useState<UsagePeriod>(() => {
     const saved = localStorage.getItem(PERIOD_KEY);
-    return (saved as UsagePeriod) ?? "month";
+    return (saved as UsagePeriod) ?? "week";
   });
   const setPeriod = (p: UsagePeriod) => {
     localStorage.setItem(PERIOD_KEY, p);

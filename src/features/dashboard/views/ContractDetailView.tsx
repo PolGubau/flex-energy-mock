@@ -101,7 +101,7 @@ export function ContractDetailView() {
   const contractLabel =
     contract.displayName ||
     contract.buContractId ||
-    `Contract #${contract.contractId}`;
+    t("dashboard.contractFallback", { id: contract.contractId });
 
   const startEditingName = () => {
     setDisplayName(contract.displayName ?? "");
@@ -139,7 +139,7 @@ export function ContractDetailView() {
       label: t("dashboard.contractDetail"),
       description: t("dashboard.detail.detailsDesc"),
       Icon: Info,
-      onClick: () => undefined,
+      onClick: () => navigate(`/contracts/${contract.contractId}/information`),
     },
   ];
 
@@ -159,9 +159,7 @@ export function ContractDetailView() {
           <div className="flex min-w-0 items-center gap-3">
             <button
               type="button"
-              onClick={() =>
-                navigate(`/contracts?service=${commodityType}`)
-              }
+              onClick={() => navigate(`/contracts?service=${commodityType}`)}
               className="flex size-9 shrink-0 items-center justify-center rounded-full bg-white/55 backdrop-blur-sm"
               aria-label={t("common.back")}
             >
@@ -259,7 +257,7 @@ export function ContractDetailView() {
           </section>
         )}
         <section
-          className="rounded-xl bg-card px-4 py-3.5 shadow-sm ring-1 ring-border"
+          className={`rounded-xl px-4 py-3.5 shadow-sm ring-1 ${contract.balanceRaw < 0 ? "bg-rose-50 ring-rose-200" : "bg-card ring-border"}`}
           aria-label={t("dashboard.detail.currentBalance")}
         >
           <div className="flex items-center justify-between gap-3">
@@ -267,13 +265,15 @@ export function ContractDetailView() {
               <p className="text-xs font-medium text-muted-foreground">
                 {t("dashboard.detail.currentBalance")}
               </p>
-              <p className="mt-1 text-2xl font-bold tabular-nums text-foreground">
+              <p
+                className={`mt-1 text-2xl font-bold tabular-nums ${contract.balanceRaw < 0 ? "text-rose-700" : "text-foreground"}`}
+              >
                 {contract.balanceFormatted}
               </p>
             </div>
             <Button
               onClick={() => setRechargeOptionsOpen(true)}
-              className="h-12 rounded-xl bg-emerald-500 px-5 text-base text-white hover:bg-emerald-600"
+              className="h-12 rounded-xl px-5 text-base"
             >
               {t("nav.recharge")}
               <ChevronRight className="size-4" />
@@ -289,10 +289,12 @@ export function ContractDetailView() {
             <CalendarDays className="size-5 shrink-0 text-primary" />
             <div className="min-w-0">
               <p className="text-[10px] font-medium text-muted-foreground">
-                {t("dashboard.detail.nextInvoice")}
+                {t("dashboard.detail.balanceDuration")}
               </p>
               <p className="truncate text-xs font-bold text-foreground">
-                {contract.depletionLabel}
+                {contract.daysLeft !== null
+                  ? t("dashboard.daysLeft", { count: contract.daysLeft })
+                  : t("common.noData")}
               </p>
             </div>
           </div>
@@ -343,16 +345,11 @@ export function ContractDetailView() {
         </section>
       </main>
 
-      <Sheet
-        open={rechargeOptionsOpen}
-        onOpenChange={setRechargeOptionsOpen}
-      >
+      <Sheet open={rechargeOptionsOpen} onOpenChange={setRechargeOptionsOpen}>
         <SheetContent side="bottom" className="min-h-[62vh] pb-8">
           <SheetHeader className="pb-6 pt-4">
             <SheetTitle>{t("nav.recharge")}</SheetTitle>
-            <SheetDescription>
-              {contractLabel}
-            </SheetDescription>
+            <SheetDescription>{contractLabel}</SheetDescription>
           </SheetHeader>
           <div className="space-y-3 px-5">
             <button
@@ -392,7 +389,7 @@ export function ContractDetailView() {
                   {t("recharge.qr")}
                 </span>
                 <span className="mt-1 block text-sm text-muted-foreground">
-                  {t("qr.openContract", "Contract QR code")}
+                  {t("qr.openContract")}
                 </span>
               </span>
               <ChevronRight className="size-5 shrink-0 text-primary" />

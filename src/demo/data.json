@@ -16,7 +16,7 @@
     {
       "contractID": 300,
       "buContractID": "DEMO-ELEC-001",
-      "displayName": "Home electricity",
+      "displayName": "Elettricità di casa",
       "serviceStatus": "Active",
       "balanceRaw": 14250,
       "averageCost": 475,
@@ -27,9 +27,9 @@
     {
       "contractID": 301,
       "buContractID": "DEMO-GAS-002",
-      "displayName": "Home heating",
+      "displayName": "Riscaldamento di casa",
       "serviceStatus": "Warning",
-      "balanceRaw": 1850,
+      "balanceRaw": -1850,
       "averageCost": 520,
       "forecastTotalCost": 15600,
       "scale": 2,
@@ -38,7 +38,7 @@
     {
       "contractID": 302,
       "buContractID": "DEMO-WATER-003",
-      "displayName": "Home water",
+      "displayName": "Acqua di casa",
       "serviceStatus": "Active",
       "balanceRaw": 6400,
       "averageCost": 160,

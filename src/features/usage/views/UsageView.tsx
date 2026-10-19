@@ -12,16 +12,17 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { EmptyState } from "@/components/ui/empty-state";
 import { ChartSkeleton } from "@/components/ui/skeleton";
+import { getCommodityType } from "@/features/dashboard/components/ContractCard";
 import { cn } from "@/lib/utils";
 import { UsageChart } from "../components/UsageChart";
 import { useUsage } from "../hooks/useUsage";
 
-const PERIODS = ["day", "month", "year"] as const;
+const PERIODS = ["day", "week", "month", "year"] as const;
 
 export function UsageView() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [chartType, setChartType] = useState<"bar" | "line">("bar");
+  const [chartType, setChartType] = useState<"bar" | "line">("line");
   const [highlightPeak, setHighlightPeak] = useState(true);
   const {
     period,
@@ -43,7 +44,11 @@ export function UsageView() {
   } = useUsage();
 
   const isCost = mode === "cost";
-  const unit = isCost ? "CHF" : "kWh";
+  const usageUnit =
+    selectedContract !== "all" && getCommodityType(selectedContract) === "water"
+      ? "m³"
+      : "kWh";
+  const unit = isCost ? "CHF" : usageUnit;
 
   return (
     <main className="pt-4 pb-8 space-y-6">
@@ -56,9 +61,7 @@ export function UsageView() {
         >
           <ArrowLeft className="size-4" />
         </button>
-        <h1 className="text-lg font-bold text-foreground">
-          {t("nav.usage")}
-        </h1>
+        <h1 className="text-lg font-bold text-foreground">{t("nav.usage")}</h1>
       </header>
 
       {/* ── Period Toolbar ─────────────────────────────── */}
@@ -157,7 +160,7 @@ export function UsageView() {
               )}
             >
               <Zap className="size-3" />
-              kWh
+              {usageUnit}
             </button>
             <button
               type="button"
@@ -213,13 +216,19 @@ export function UsageView() {
         />
       ) : (
         <div className="space-y-4">
-          <div className={cn("transition-opacity duration-200", isLoading && "opacity-40 pointer-events-none")}>
+          <div
+            className={cn(
+              "transition-opacity duration-200",
+              isLoading && "opacity-40 pointer-events-none",
+            )}
+          >
             <UsageChart
               data={data}
               period={period}
               chartType={chartType}
               formatXAxis={formatXAxis}
               mode={mode}
+              usageUnit={usageUnit}
               highlightPeak={highlightPeak}
             />
           </div>
@@ -230,9 +239,7 @@ export function UsageView() {
             <div className="flex items-center justify-between text-xs text-muted-foreground">
               <span>
                 {t("usage.peak")}{" "}
-                {period === "day"
-                  ? t("usage.peakHour")
-                  : t("usage.peakPeriod")}
+                {period === "day" ? t("usage.peakHour") : t("usage.peakPeriod")}
               </span>
               <span className="font-semibold text-foreground">{peakLabel}</span>
             </div>
@@ -241,9 +248,7 @@ export function UsageView() {
             <div className="flex items-center justify-between text-xs text-muted-foreground">
               <span>
                 {t("usage.min")}{" "}
-                {period === "day"
-                  ? t("usage.minHour")
-                  : t("usage.minPeriod")}
+                {period === "day" ? t("usage.minHour") : t("usage.minPeriod")}
               </span>
               <span className="font-semibold text-foreground">{minLabel}</span>
             </div>
@@ -270,7 +275,9 @@ export function UsageView() {
                 <span
                   className={cn(
                     "font-semibold",
-                    trend <= 0 ? "text-emerald-600 dark:text-emerald-400" : "text-amber-600 dark:text-amber-400",
+                    trend <= 0
+                      ? "text-emerald-600 dark:text-emerald-400"
+                      : "text-amber-600 dark:text-amber-400",
                   )}
                 >
                   {trend > 0 ? "+" : ""}
@@ -295,7 +302,9 @@ export function UsageView() {
                 <span
                   className={cn(
                     "pointer-events-none absolute top-0.5 size-3 rounded-full shadow transition-transform duration-200",
-                    highlightPeak ? "translate-x-3.5 bg-white" : "translate-x-0.5 bg-muted-foreground/60",
+                    highlightPeak
+                      ? "translate-x-3.5 bg-white"
+                      : "translate-x-0.5 bg-muted-foreground/60",
                   )}
                 />
               </button>

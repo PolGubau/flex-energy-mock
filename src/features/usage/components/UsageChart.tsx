@@ -59,11 +59,13 @@ function ChartTooltip({
   active,
   payload,
   mode,
+  usageUnit = "kWh",
   period,
 }: {
   active?: boolean;
   payload?: TooltipPayload[];
   mode?: string;
+  usageUnit?: string;
   period?: string;
 }) {
   if (!active || !payload?.length) return null;
@@ -81,7 +83,9 @@ function ChartTooltip({
     <div className="bg-foreground text-background px-3 py-2.5 rounded-2xl shadow-xl">
       <p className="text-[10px] opacity-40 mb-0.5 font-medium">{dateLabel}</p>
       <p className="text-sm font-bold tabular-nums">
-        {mode === "cost" ? `CHF ${val.toFixed(2)}` : `${val.toFixed(2)} kWh`}
+        {mode === "cost"
+          ? `CHF ${val.toFixed(2)}`
+          : `${val.toFixed(2)} ${usageUnit}`}
       </p>
     </div>
   );
@@ -93,18 +97,21 @@ interface UsageChartProps {
   chartType?: "bar" | "line";
   formatXAxis: (value: string) => string;
   mode?: "kwh" | "cost";
+  usageUnit?: string;
   highlightPeak?: boolean;
 }
 
 export function UsageChart({
   data,
   period,
-  chartType = "bar",
+  chartType = "line",
   formatXAxis,
   mode = "kwh",
+  usageUnit = "kWh",
   highlightPeak = true,
 }: UsageChartProps) {
-  const { C_PRIMARY, C_PRIMARY_MUTED, C_GRID, C_TICK, C_CURSOR } = useChartColors();
+  const { C_PRIMARY, C_PRIMARY_MUTED, C_GRID, C_TICK, C_CURSOR } =
+    useChartColors();
   const avg = data.length
     ? data.reduce((s, d) => s + d.value, 0) / data.length
     : 0;
@@ -140,31 +147,36 @@ export function UsageChart({
       cursor={{ fill: C_CURSOR, radius: 8 } as React.SVGProps<SVGRectElement>}
       content={(p) => (
         <ChartTooltip
-          {...(p as unknown as { active?: boolean; payload?: TooltipPayload[] })}
+          {...(p as unknown as {
+            active?: boolean;
+            payload?: TooltipPayload[];
+          })}
           mode={mode}
+          usageUnit={usageUnit}
           period={period}
         />
       )}
     />
   );
-  const avgLine = avg > 0 ? (
-    <ReferenceLine
-      y={avg}
-      stroke={C_PRIMARY}
-      strokeDasharray="4 3"
-      strokeWidth={1.5}
-      strokeOpacity={0.6}
-      label={{
-        value: `⌀ ${avg.toFixed(1)}`,
-        position: "insideTopLeft",
-        fontSize: 9,
-        fontWeight: 700,
-        fill: C_PRIMARY,
-        dy: -5,
-        dx: 4,
-      }}
-    />
-  ) : null;
+  const avgLine =
+    avg > 0 ? (
+      <ReferenceLine
+        y={avg}
+        stroke={C_PRIMARY}
+        strokeDasharray="4 3"
+        strokeWidth={1.5}
+        strokeOpacity={0.6}
+        label={{
+          value: `⌀ ${avg.toFixed(1)}`,
+          position: "insideTopLeft",
+          fontSize: 9,
+          fontWeight: 700,
+          fill: C_PRIMARY,
+          dy: -5,
+          dx: 4,
+        }}
+      />
+    ) : null;
 
   return (
     <AnimatePresence mode="wait">
@@ -201,23 +213,62 @@ export function UsageChart({
                 stroke={C_PRIMARY}
                 strokeWidth={2.5}
                 fillOpacity={0.25}
-                dot={(props: { cx?: number; cy?: number; payload: { timestamp: string; value: number } }) => {
-                  const isPeak = highlightPeak && peakEntry && props.payload.timestamp === peakEntry.timestamp;
+                dot={(props: {
+                  cx?: number;
+                  cy?: number;
+                  payload: { timestamp: string; value: number };
+                }) => {
+                  const isPeak =
+                    highlightPeak &&
+                    peakEntry &&
+                    props.payload.timestamp === peakEntry.timestamp;
                   if (isPeak) {
                     return (
                       <g key={props.payload.timestamp}>
                         {/* outer ring */}
-                        <circle cx={props.cx} cy={props.cy} r={9} fill={C_PRIMARY} fillOpacity={0.15} />
+                        <circle
+                          cx={props.cx}
+                          cy={props.cy}
+                          r={9}
+                          fill={C_PRIMARY}
+                          fillOpacity={0.15}
+                        />
                         {/* inner dot */}
-                        <circle cx={props.cx} cy={props.cy} r={5} fill={C_PRIMARY} stroke="white" strokeWidth={2} />
+                        <circle
+                          cx={props.cx}
+                          cy={props.cy}
+                          r={5}
+                          fill={C_PRIMARY}
+                          stroke="white"
+                          strokeWidth={2}
+                        />
                       </g>
                     );
                   }
                   if (!highlightPeak) {
-                    return <circle key={props.payload.timestamp} cx={props.cx} cy={props.cy} r={3} fill={C_PRIMARY} strokeWidth={0} />;
+                    return (
+                      <circle
+                        key={props.payload.timestamp}
+                        cx={props.cx}
+                        cy={props.cy}
+                        r={3}
+                        fill={C_PRIMARY}
+                        strokeWidth={0}
+                      />
+                    );
                   }
                   // muted dots when highlight is on but not peak
-                  return <circle key={props.payload.timestamp} cx={props.cx} cy={props.cy} r={2} fill={C_PRIMARY} fillOpacity={0.3} strokeWidth={0} />;
+                  return (
+                    <circle
+                      key={props.payload.timestamp}
+                      cx={props.cx}
+                      cy={props.cy}
+                      r={2}
+                      fill={C_PRIMARY}
+                      fillOpacity={0.3}
+                      strokeWidth={0}
+                    />
+                  );
                 }}
                 activeDot={{ r: 6 }}
                 animationDuration={600}
@@ -238,7 +289,11 @@ export function UsageChart({
                 {data.map((entry) => (
                   <Cell
                     key={entry.timestamp}
-                    fill={!highlightPeak || entry === peakEntry ? C_PRIMARY : C_PRIMARY_MUTED}
+                    fill={
+                      !highlightPeak || entry === peakEntry
+                        ? C_PRIMARY
+                        : C_PRIMARY_MUTED
+                    }
                   />
                 ))}
               </Bar>

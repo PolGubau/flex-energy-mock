@@ -23,6 +23,7 @@ import { ForgotPasswordView } from "@/features/auth/views/ForgotPasswordView";
 import { LoginView } from "@/features/auth/views/LoginView";
 import { TwoFactorAuthView } from "@/features/auth/views/TwoFactorAuthView";
 import { ContractDetailView } from "@/features/dashboard/views/ContractDetailView";
+import { ContractInformationView } from "@/features/dashboard/views/ContractInformationView";
 import { DashboardView } from "@/features/dashboard/views/DashboardView";
 import { ServiceOverviewView } from "@/features/dashboard/views/ServiceOverviewView";
 import { ContractInvoicesView } from "@/features/history/views/ContractInvoicesView";
@@ -65,6 +66,10 @@ function AnimatedRoutes() {
           <Route
             path="/contracts/:contractId/invoices"
             element={<ContractInvoicesView />}
+          />
+          <Route
+            path="/contracts/:contractId/information"
+            element={<ContractInformationView />}
           />
           <Route path="/usage" element={<UsageView />} />
           <Route path="/recharge" element={<RechargeView />} />

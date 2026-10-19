@@ -1,11 +1,19 @@
-import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import App from "./App";
 import { resetDemoState } from "./demo/store";
-import "./i18n/config";
+import i18n from "./i18n/config";
 
-beforeEach(() => {
+beforeEach(async () => {
   resetDemoState();
+  window.localStorage.clear();
+  await i18n.changeLanguage("it");
   vi.stubGlobal(
     "fetch",
     vi.fn(() => {
@@ -18,12 +26,12 @@ beforeEach(() => {
   vi.stubGlobal(
     "ResizeObserver",
     class {
-      observe() { }
-      unobserve() { }
-      disconnect() { }
+      observe() {}
+      unobserve() {}
+      disconnect() {}
     },
   );
-  vi.spyOn(window, "scrollTo").mockImplementation(() => { });
+  vi.spyOn(window, "scrollTo").mockImplementation(() => {});
 });
 
 afterEach(() => {
@@ -47,10 +55,10 @@ describe("demo routes without a data connection", () => {
   ])("renders %s with local data", async (path) => {
     window.history.replaceState({}, "", path);
     render(<App />);
-    fireEvent.click(await screen.findByRole("button", { name: /^Sign in$/ }));
+    fireEvent.click(await screen.findByRole("button", { name: /^Accedi$/ }));
     expect(
-      await screen.findByRole("complementary", { name: "Demo mode" }),
-    ).toBeInTheDocument();
+      (await screen.findAllByRole("button", { name: "Home" })).length,
+    ).toBeGreaterThan(0);
     await waitFor(() =>
       expect(screen.getAllByRole("heading").length).toBeGreaterThan(0),
     );
@@ -65,8 +73,8 @@ describe("demo routes without a data connection", () => {
   ])("accepts demo login with email %j and no network", async (email, password) => {
     window.history.replaceState({}, "", "/");
     render(<App />);
-    const signIn = await screen.findByRole("button", { name: /^Sign in$/ });
-    const emailInput = screen.getByLabelText("Email address");
+    const signIn = await screen.findByRole("button", { name: /^Accedi$/ });
+    const emailInput = screen.getByLabelText("Indirizzo email");
     const passwordInput = screen.getByLabelText("Password");
     expect(emailInput).not.toBeRequired();
     expect(passwordInput).not.toBeRequired();
@@ -74,7 +82,9 @@ describe("demo routes without a data connection", () => {
     fireEvent.change(emailInput, { target: { value: email } });
     fireEvent.change(passwordInput, { target: { value: password } });
     fireEvent.click(signIn);
-    expect(await screen.findByRole("complementary", { name: "Demo mode" })).toBeInTheDocument();
+    expect(
+      (await screen.findAllByRole("button", { name: "Home" })).length,
+    ).toBeGreaterThan(0);
     expect(fetch).not.toHaveBeenCalled();
     expect(XMLHttpRequest.prototype.open).not.toHaveBeenCalled();
   });
@@ -82,8 +92,12 @@ describe("demo routes without a data connection", () => {
   it("simulates Google login without contacting Google", async () => {
     window.history.replaceState({}, "", "/");
     render(<App />);
-    fireEvent.click(await screen.findByRole("button", { name: "Continue with Google" }));
-    expect(await screen.findByRole("complementary", { name: "Demo mode" })).toBeInTheDocument();
+    fireEvent.click(
+      await screen.findByRole("button", { name: "Continua con Google" }),
+    );
+    expect(
+      (await screen.findAllByRole("button", { name: "Home" })).length,
+    ).toBeGreaterThan(0);
     expect(fetch).not.toHaveBeenCalled();
     expect(XMLHttpRequest.prototype.open).not.toHaveBeenCalled();
   });

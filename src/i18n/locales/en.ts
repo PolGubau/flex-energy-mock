@@ -129,6 +129,7 @@ const en = {
       backToContracts: "Back to contracts",
       currentBalance: "Current balance",
       nextInvoice: "Next invoice",
+      balanceDuration: "Balance available for",
       averageConsumption: "Average consumption",
       perDay: "/day",
       actionsAndDetails: "Actions and details",
@@ -141,7 +142,11 @@ const en = {
       editDisplayName: "Edit contract name",
       displayNameError: "Could not save the contract name. Please try again.",
       contractCode: "Contract code: {{code}}",
+      contractCodeLabel: "Contract code",
+      contractInformation: "Contract information",
+      balanceInformation: "Balance information",
     },
+    contractFallback: "Contract #{{id}}",
     commodity: {
       all: "All",
       electricity: "Electricity",
@@ -219,9 +224,29 @@ const en = {
     tapToApply: "Tap to apply",
     coversDays: "~{{count}} days coverage",
     contractsTitle: "Your contracts",
+    processingTitle: "Processing payment",
+    processingDesc: "We are securely confirming your recharge.",
+    processingPayment: "Confirming payment",
+    processingBalance: "Your balance will update once payment is confirmed.",
     noContracts: "No contracts found",
     noContractsDesc:
       "There are no active contracts associated with your account.",
+    confirmationTitle: "Confirm recharge",
+    completedTitle: "Recharge completed",
+    selectedContracts: "{{count}} selected contracts",
+    completedContracts: "{{count}} recharged contracts",
+    completedDesc: "Your recharges were completed successfully.",
+    completedSingleDesc: "Your recharge was completed successfully.",
+    rechargeAmount: "Recharge amount",
+    distributedOver: "Distributed across {{count}} contracts",
+    currentBalanceValue: "Current balance {{amount}}",
+    newBalance: "New balance",
+    newAvailableBalance: "New available balance",
+    service: "Service",
+    confirmAndPay: "Confirm and pay",
+    returnHome: "Return home",
+    returnToContract: "Return to contract",
+    amountFor: "Amount for {{label}}",
   },
 
   cart: {
@@ -277,13 +302,16 @@ const en = {
   },
 
   qr: {
-    scanDescription: "Use this code to recharge quickly.",
-    scanHint: "Scan it with the FlexEnergy app.",
+    scanDescription: "Show this code at the service desk to recharge.",
+    scanHint: "Show this QR to the counter staff.",
     contract: "Contract {{contract}}",
     rechargeTitle: "Your recharge QR",
     operatorHint:
-      "Show this QR to the service desk operator. They will enter the amount directly.",
+      "The service desk operator will scan this QR to identify your account or contract and continue the recharge.",
     share: "Share QR",
+    contractDesc: "Scan to access this contract",
+    openContract: "Contract QR code",
+    recharge: "Recharge",
   },
 
   settings: {
@@ -306,6 +334,12 @@ const en = {
       personal: "Personal",
       account: "Account",
       security: "Security",
+      edit: "Edit profile",
+      editTitle: "Edit profile",
+      saveChanges: "Save changes",
+      saved: "Saved",
+      saveError: "Failed to save the demo profile. Please try again.",
+      companyName: "Company name",
     },
     notifications: {
       title: "Notifications",
@@ -316,6 +350,26 @@ const en = {
       monthlyReportDesc: "Receive monthly consumption summary",
       threshold: "Alert threshold (CHF)",
       save: "Save alert settings",
+      demo: {
+        "demo-welcome": {
+          title: "Welcome to the demo",
+          message:
+            "All data is simulated. Changes stay in this browser and no real payments are made.",
+        },
+        "demo-low-balance": {
+          title: "Heating balance is low",
+          message: "Try a simulated recharge to top up your heating contract.",
+        },
+        "demo-reading": {
+          title: "Meter reading updated",
+          message: "Your simulated consumption data is ready to explore.",
+        },
+      },
+      recharge: {
+        title: "Balance recharged",
+        message_one: "Successfully recharged {{count}} contract.",
+        message_other: "Successfully recharged {{count}} contracts.",
+      },
     },
     alerts: {
       title: "Threshold & Alerts",
@@ -344,6 +398,7 @@ const en = {
       en: "English",
       it: "Italiano",
       de: "Deutsch",
+      fr: "Français",
     },
     exports: {
       title: "Exports",

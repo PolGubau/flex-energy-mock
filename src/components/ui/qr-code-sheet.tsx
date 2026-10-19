@@ -1,5 +1,5 @@
-import { QRCodeSVG } from "qrcode.react";
 import { ScanLine, Share2 } from "lucide-react";
+import { QRCodeSVG } from "qrcode.react";
 import { useTranslation } from "react-i18next";
 import {
   Sheet,
@@ -86,14 +86,20 @@ export function QRCodeSheet({
         </SheetHeader>
 
         <div className="flex flex-col items-center px-5 text-center">
-          <div className="rounded-xl bg-white p-4 shadow-sm ring-1 ring-border">
-            <QRCodeSVG
-              value={value}
-              size={208}
-              level="H"
-              includeMargin
-              className="block"
-            />
+          <div className="w-full rounded-2xl border border-primary/10 bg-primary/5 p-4 sm:max-w-sm">
+            <div className="rounded-xl bg-white p-3 shadow-[0_12px_28px_rgba(15,23,42,0.08)] ring-1 ring-slate-200/80">
+              <QRCodeSVG
+                value={value}
+                size={188}
+                level="H"
+                includeMargin
+                className="mx-auto block"
+              />
+            </div>
+            <div className="mt-3 flex items-center justify-center gap-2 text-xs font-semibold text-primary">
+              <ScanLine className="size-4" />
+              <span>{t("qr.scanHint")}</span>
+            </div>
           </div>
           {contractLabel && (
             <div className="mt-4">
@@ -105,14 +111,12 @@ export function QRCodeSheet({
               </p>
             </div>
           )}
-          <div className="mt-4 flex w-full items-start gap-3 rounded-xl bg-primary/5 px-3.5 py-3 text-left">
+          <div className="mt-4 flex w-full items-start gap-3 rounded-xl border border-border/70 bg-card px-3.5 py-3 text-left">
             <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
               <ScanLine className="size-4" />
             </span>
             <p className="text-xs leading-relaxed text-muted-foreground">
-              {payload.type === "contract"
-                ? t("qr.operatorHint")
-                : t("qr.scanHint")}
+              {t("qr.operatorHint")}
             </p>
           </div>
           {navigator.share && (

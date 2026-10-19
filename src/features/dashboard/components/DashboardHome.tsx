@@ -104,6 +104,7 @@ export function DashboardHome({
   const { t } = useTranslation();
   const { user } = useAuth();
   const [qrOpen, setQrOpen] = useState(false);
+  const hasNegativeBalance = totalBalanceRaw !== null && totalBalanceRaw < 0;
 
   return (
     <div className="mx-auto w-full max-w-4xl space-y-8 pb-8 sm:space-y-10">
@@ -112,10 +113,10 @@ export function DashboardHome({
       ) : (
         <>
           <section
-            className={`rounded-xl px-5 py-3.5 ring-1 ${totalBalanceRaw !== null && totalBalanceRaw < 0 ? "bg-rose-50 ring-rose-100" : "bg-emerald-50 ring-emerald-100"}`}
+            className={`rounded-xl px-5 py-3.5 ring-1 ${hasNegativeBalance ? "bg-rose-50 ring-rose-100" : "bg-emerald-50 ring-emerald-100"}`}
           >
             <p
-              className={`text-xs font-medium ${totalBalanceRaw !== null && totalBalanceRaw < 0 ? "text-rose-700/75" : "text-emerald-700/75"}`}
+              className={`text-xs font-medium ${hasNegativeBalance ? "text-rose-700/75" : "text-emerald-700/75"}`}
             >
               {t("dashboard.totalBalance")}
             </p>
@@ -166,6 +167,7 @@ export function DashboardHome({
                     reference.scale,
                   )
                 : "--";
+              const hasNegativeServiceBalance = rawBalance < 0;
 
               return (
                 <button
@@ -180,7 +182,9 @@ export function DashboardHome({
                   <p className="truncate text-xs font-semibold">
                     {t(`dashboard.commodity.${type}`)}
                   </p>
-                  <p className="mt-0.5 truncate text-sm font-bold tabular-nums">
+                  <p
+                    className={`mt-0.5 truncate text-sm font-bold tabular-nums ${hasNegativeServiceBalance ? "text-rose-700" : ""}`}
+                  >
                     {balance}
                   </p>
                 </button>
@@ -207,7 +211,9 @@ export function DashboardHome({
                   const label =
                     contract.displayName ||
                     contract.buContractId ||
-                    `Contract #${contract.contractId}`;
+                    t("dashboard.contractFallback", {
+                      id: contract.contractId,
+                    });
                   const statusKey = getContractStatusKey(
                     contract.serviceStatus,
                   );
@@ -219,7 +225,7 @@ export function DashboardHome({
                       onClick={() =>
                         navigate(`/contracts/${contract.contractId}`)
                       }
-                      className="flex w-full items-center gap-4 rounded-xl border border-border/70 bg-card px-4 py-3.5 text-left shadow-sm transition-colors hover:bg-muted/40"
+                      className={`flex w-full items-center gap-4 rounded-xl border px-4 py-3.5 text-left shadow-sm transition-colors ${contract.balanceRaw < 0 ? "border-rose-100 bg-rose-50/70 hover:bg-rose-50" : "border-border/70 bg-card hover:bg-muted/40"}`}
                     >
                       <span
                         className={`flex size-11 shrink-0 items-center justify-center rounded-full ${service.iconBg}`}
@@ -233,7 +239,9 @@ export function DashboardHome({
                         <span className="mt-0.5 block truncate text-[11px] text-muted-foreground">
                           {contract.buContractId ?? `CO-${contract.contractId}`}
                         </span>
-                        <span className="mt-2 block text-sm font-semibold tabular-nums text-foreground">
+                        <span
+                          className={`mt-2 block text-sm font-semibold tabular-nums ${contract.balanceRaw < 0 ? "text-rose-700" : "text-foreground"}`}
+                        >
                           {contract.balanceFormatted}
                         </span>
                       </span>
@@ -262,7 +270,7 @@ export function DashboardHome({
       <QRCodeSheet
         open={qrOpen}
         onOpenChange={setQrOpen}
-        title={t("qr.ricarica", "Recharge")}
+        title={t("qr.recharge")}
         payload={buildDashboardQRPayload(user?.id ?? 0)}
       />
     </div>

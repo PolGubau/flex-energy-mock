@@ -1,5 +1,16 @@
 import type { LucideIcon } from "lucide-react";
-import { AlertCircle, BarChart3, Bell, CheckCircle2, History, Home, Info, Settings, X, Zap } from "lucide-react";
+import {
+  AlertCircle,
+  BarChart3,
+  Bell,
+  CheckCircle2,
+  History,
+  Home,
+  Info,
+  Settings,
+  X,
+  Zap,
+} from "lucide-react";
 import { motion } from "motion/react";
 import { Popover } from "radix-ui";
 import { useTranslation } from "react-i18next";
@@ -13,12 +24,24 @@ export function BottomNav() {
   const { state, markNotificationAsRead, clearNotifications } = useApp();
   const notifications = state?.notifications ?? [];
   const unreadCount = notifications.filter((n) => !n.read).length;
+  const getNotificationText = (
+    notification: (typeof notifications)[number],
+  ) => {
+    const key = `settings.notifications.demo.${notification.id}`;
+    return {
+      title: t(`${key}.title`, { defaultValue: notification.title }),
+      message: t(`${key}.message`, { defaultValue: notification.message }),
+    };
+  };
 
   const getNotifIcon = (type: string) => {
     switch (type) {
-      case "success": return <CheckCircle2 className="size-4 text-success" />;
-      case "warning": return <AlertCircle className="size-4 text-warning" />;
-      default: return <Info className="size-4 text-primary" />;
+      case "success":
+        return <CheckCircle2 className="size-4 text-success" />;
+      case "warning":
+        return <AlertCircle className="size-4 text-warning" />;
+      default:
+        return <Info className="size-4 text-primary" />;
     }
   };
 
@@ -42,10 +65,11 @@ export function BottomNav() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const initials = [user?.firstName, user?.lastName]
-    .filter(Boolean)
-    .map((n) => (n as string)[0].toUpperCase())
-    .join("") || "?";
+  const initials =
+    [user?.firstName, user?.lastName]
+      .filter(Boolean)
+      .map((n) => (n as string)[0].toUpperCase())
+      .join("") || "?";
 
   return (
     <>
@@ -54,12 +78,19 @@ export function BottomNav() {
         {/* Brand */}
         <div className="px-5 py-6">
           <hgroup className="flex items-center gap-3">
-            <span className="size-10 bg-primary rounded-2xl flex items-center justify-center shadow-md shadow-primary/30" aria-hidden="true">
+            <span
+              className="size-10 bg-primary rounded-2xl flex items-center justify-center shadow-md shadow-primary/30"
+              aria-hidden="true"
+            >
               <Zap className="size-5 text-white" strokeWidth={2.5} />
             </span>
             <div>
-              <strong className="font-bold text-foreground text-base tracking-tight leading-none">FlexEnergy</strong>
-              <p className="text-[10px] text-muted-foreground font-medium mt-0.5">{t("nav.smartEnergy")}</p>
+              <strong className="font-bold text-foreground text-base tracking-tight leading-none">
+                FlexEnergy
+              </strong>
+              <p className="text-[10px] text-muted-foreground font-medium mt-0.5">
+                {t("nav.smartEnergy")}
+              </p>
             </div>
           </hgroup>
         </div>
@@ -91,7 +122,12 @@ export function BottomNav() {
                 {!isActive && (
                   <span className="absolute inset-0 rounded-2xl bg-transparent group-hover:bg-muted/60 transition-colors duration-150" />
                 )}
-                <item.icon className={cn("size-4 shrink-0 relative z-10 transition-all", isActive ? "stroke-[2.5px]" : "stroke-2")} />
+                <item.icon
+                  className={cn(
+                    "size-4 shrink-0 relative z-10 transition-all",
+                    isActive ? "stroke-[2.5px]" : "stroke-2",
+                  )}
+                />
                 <span className="relative z-10">{item.label}</span>
               </button>
             );
@@ -120,10 +156,12 @@ export function BottomNav() {
                 side="right"
                 align="end"
                 sideOffset={12}
-                className="z-50 w-80 bg-card rounded-3xl shadow-2xl border border-border overflow-hidden outline-none animate-in fade-in zoom-in-95 duration-200"
+                className="z-50 w-[calc(100vw-2rem)] max-w-80 overflow-hidden rounded-3xl border border-border bg-card shadow-2xl outline-none animate-in fade-in zoom-in-95 duration-200"
               >
                 <header className="p-4 border-b border-border flex justify-between items-center bg-muted/30">
-                  <h3 className="font-semibold text-sm text-foreground">{t("settings.notifications.title")}</h3>
+                  <h3 className="font-semibold text-sm text-foreground">
+                    {t("settings.notifications.title")}
+                  </h3>
                   <div className="flex gap-3 items-center">
                     <button
                       type="button"
@@ -137,36 +175,67 @@ export function BottomNav() {
                     </Popover.Close>
                   </div>
                 </header>
-                <ol className="max-h-[60vh] overflow-y-auto" aria-live="polite">
+                <ol
+                  className="max-h-[min(60vh,28rem)] overflow-y-auto overscroll-contain"
+                  aria-live="polite"
+                >
                   {notifications.length === 0 ? (
                     <li className="p-10 text-center space-y-3 list-none">
                       <figure className="w-12 h-12 bg-muted rounded-full flex items-center justify-center mx-auto">
-                        <Bell className="size-6 text-border" aria-hidden="true" />
+                        <Bell
+                          className="size-6 text-border"
+                          aria-hidden="true"
+                        />
                       </figure>
-                      <p className="text-xs text-muted-foreground">{t("settings.notifications.noNew")}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {t("settings.notifications.noNew")}
+                      </p>
                     </li>
                   ) : (
-                    notifications.map((n) => (
-                      <li key={n.id} className="list-none">
-                        <button
-                          type="button"
-                          onClick={() => markNotificationAsRead(n.id)}
-                          className={`w-full text-left p-4 border-b border-border/50 hover:bg-muted/40 transition-colors cursor-pointer relative group ${!n.read ? "bg-primary/5" : ""}`}
-                        >
-                          {!n.read && <span className="absolute left-0 top-0 bottom-0 w-1 bg-primary" aria-hidden="true" />}
-                          <article className="flex gap-3">
-                            <span className="mt-0.5 shrink-0" aria-hidden="true">{getNotifIcon(n.type)}</span>
-                            <div className="space-y-1">
-                              <p className="text-xs font-semibold text-foreground tracking-tight">{n.title}</p>
-                              <p className="text-xs truncate text-muted-foreground leading-relaxed">{n.message}</p>
-                              <time dateTime={n.timestamp} className="text-[10px] text-muted-foreground/70">
-                                {new Date(n.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-                              </time>
-                            </div>
-                          </article>
-                        </button>
-                      </li>
-                    ))
+                    notifications.map((n) => {
+                      const content = getNotificationText(n);
+                      return (
+                        <li key={n.id} className="list-none">
+                          <button
+                            type="button"
+                            onClick={() => markNotificationAsRead(n.id)}
+                            className={`w-full text-left p-4 border-b border-border/50 hover:bg-muted/40 transition-colors cursor-pointer relative group ${!n.read ? "bg-primary/5" : ""}`}
+                          >
+                            {!n.read && (
+                              <span
+                                className="absolute left-0 top-0 bottom-0 w-1 bg-primary"
+                                aria-hidden="true"
+                              />
+                            )}
+                            <article className="flex gap-3">
+                              <span
+                                className="mt-0.5 shrink-0"
+                                aria-hidden="true"
+                              >
+                                {getNotifIcon(n.type)}
+                              </span>
+                              <div className="space-y-1">
+                                <p className="text-xs font-semibold text-foreground tracking-tight">
+                                  {content.title}
+                                </p>
+                                <p className="text-xs text-muted-foreground leading-relaxed">
+                                  {content.message}
+                                </p>
+                                <time
+                                  dateTime={n.timestamp}
+                                  className="text-[10px] text-muted-foreground/70"
+                                >
+                                  {new Date(n.timestamp).toLocaleTimeString(
+                                    [],
+                                    { hour: "2-digit", minute: "2-digit" },
+                                  )}
+                                </time>
+                              </div>
+                            </article>
+                          </button>
+                        </li>
+                      );
+                    })
                   )}
                 </ol>
               </Popover.Content>
@@ -177,7 +246,10 @@ export function BottomNav() {
         {/* User footer */}
         <address className="px-3 pb-5 not-italic">
           <div className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-muted/50 border border-border/60">
-            <span className="size-9 rounded-xl bg-primary/15 flex items-center justify-center shrink-0" aria-hidden="true">
+            <span
+              className="size-9 rounded-xl bg-primary/15 flex items-center justify-center shrink-0"
+              aria-hidden="true"
+            >
               <span className="text-xs font-bold text-primary">{initials}</span>
             </span>
             <dl className="min-w-0 flex-1">
@@ -186,7 +258,9 @@ export function BottomNav() {
                 {user?.firstName} {user?.lastName}
               </dd>
               <dt className="sr-only">Email</dt>
-              <dd className="text-xs text-muted-foreground truncate">{user?.email}</dd>
+              <dd className="text-xs text-muted-foreground truncate">
+                {user?.email}
+              </dd>
             </dl>
           </div>
         </address>
@@ -213,7 +287,11 @@ export function BottomNav() {
                     <motion.span
                       layoutId="mobile-nav-pill"
                       className="absolute inset-0 bg-primary/12 rounded-full"
-                      transition={{ type: "spring", stiffness: 420, damping: 38 }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 420,
+                        damping: 38,
+                      }}
                     />
                   )}
                   <item.icon

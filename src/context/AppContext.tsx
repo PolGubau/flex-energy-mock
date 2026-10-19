@@ -1,5 +1,6 @@
 import type React from "react";
 import { createContext, useContext, useEffect, useState } from "react";
+import i18n from "@/i18n";
 import { apiService } from "../services/api";
 import type { AlertSettings, AppState, Notification } from "../types";
 import { toMinorUnits } from "../types";
@@ -14,7 +15,11 @@ export interface CartRechargeItem {
 interface AppContextType {
   state: AppState | null;
   recharge: (amount: number) => Promise<void>;
-  rechargeContract: (contractId: number, amount: number, scale: number) => Promise<void>;
+  rechargeContract: (
+    contractId: number,
+    amount: number,
+    scale: number,
+  ) => Promise<void>;
   rechargeCart: (items: CartRechargeItem[]) => Promise<void>;
   refreshState: () => Promise<void>;
   toggleAlert: (key: keyof AlertSettings) => Promise<void>;
@@ -53,10 +58,18 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     let cancelled = false;
     apiService
       .getAppState(user.id)
-      .then((data) => { if (!cancelled) setState(data); })
-      .catch(() => { if (!cancelled) setState(null); })
-      .finally(() => { if (!cancelled) setIsLoading(false); });
-    return () => { cancelled = true; };
+      .then((data) => {
+        if (!cancelled) setState(data);
+      })
+      .catch(() => {
+        if (!cancelled) setState(null);
+      })
+      .finally(() => {
+        if (!cancelled) setIsLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
@@ -82,8 +95,16 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const rechargeCart = async (items: CartRechargeItem[]) => {
     if (!state?.dashboard || !user || items.length === 0) return;
 
-    if (items.some((item) => !Number.isFinite(item.amount) || item.amount <= 0 ||
-      !state.dashboard?.contracts.some((contract) => contract.contractId === item.contractId))) {
+    if (
+      items.some(
+        (item) =>
+          !Number.isFinite(item.amount) ||
+          item.amount <= 0 ||
+          !state.dashboard?.contracts.some(
+            (contract) => contract.contractId === item.contractId,
+          ),
+      )
+    ) {
       throw new Error("Invalid demo recharge");
     }
     for (const item of items) {
@@ -98,8 +119,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
     const newNotification: Notification = {
       id: Math.random().toString(36).substr(2, 9),
-      title: "Balance Recharged",
-      message: `Successfully recharged ${items.length} contract${items.length > 1 ? "s" : ""}.`,
+      title: i18n.t("settings.notifications.recharge.title"),
+      message: i18n.t("settings.notifications.recharge.message", {
+        count: items.length,
+      }),
       timestamp: new Date().toISOString(),
       read: false,
       type: "success",
@@ -171,19 +194,19 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setState((prev) =>
       prev?.dashboard
         ? {
-          ...prev,
-          dashboard: {
-            ...prev.dashboard,
-            contracts: prev.dashboard.contracts.map((contract) =>
-              contract.contractId === contractId
-                ? {
-                  ...contract,
-                  displayName: trimmedDisplayName || undefined,
-                }
-                : contract,
-            ),
-          },
-        }
+            ...prev,
+            dashboard: {
+              ...prev.dashboard,
+              contracts: prev.dashboard.contracts.map((contract) =>
+                contract.contractId === contractId
+                  ? {
+                      ...contract,
+                      displayName: trimmedDisplayName || undefined,
+                    }
+                  : contract,
+              ),
+            },
+          }
         : prev,
     );
   };

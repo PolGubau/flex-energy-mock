@@ -1,5 +1,12 @@
 import type { LucideIcon } from "lucide-react";
-import { Clock, Droplets, Flame, QrCode, TrendingDown, Zap } from "lucide-react";
+import {
+  Clock,
+  Droplets,
+  Flame,
+  QrCode,
+  TrendingDown,
+  Zap,
+} from "lucide-react";
 import { motion } from "motion/react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -309,7 +316,7 @@ export function ContractCard({ c, onRecharge }: ContractCardProps) {
         open={qrOpen}
         onOpenChange={setQrOpen}
         title={contractLabel}
-        description={t("qr.contractDesc", "Scan to access this contract")}
+        description={t("qr.contractDesc")}
         payload={contractQRPayload}
         contractName={contractLabel}
       />

@@ -131,6 +131,7 @@ const de: Translations = {
       backToContracts: "Zurück zu Verträgen",
       currentBalance: "Aktuelles Guthaben",
       nextInvoice: "Nächste Rechnung",
+      balanceDuration: "Guthaben verfügbar für",
       averageConsumption: "Durchschnittsverbrauch",
       perDay: "/Tag",
       actionsAndDetails: "Aktionen und Details",
@@ -144,7 +145,11 @@ const de: Translations = {
       displayNameError:
         "Der Vertragsname konnte nicht gespeichert werden. Bitte versuchen Sie es erneut.",
       contractCode: "Vertragscode: {{code}}",
+      contractCodeLabel: "Vertragscode",
+      contractInformation: "Vertragsinformationen",
+      balanceInformation: "Guthabeninformationen",
     },
+    contractFallback: "Vertrag #{{id}}",
     commodity: {
       all: "Alle",
       electricity: "Strom",
@@ -222,8 +227,29 @@ const de: Translations = {
     tapToApply: "Antippen zum Übernehmen",
     coversDays: "~{{count}} Tage Abdeckung",
     contractsTitle: "Ihre Verträge",
+    processingTitle: "Zahlung wird verarbeitet",
+    processingDesc: "Ihre Aufladung wird sicher bestätigt.",
+    processingPayment: "Zahlung wird bestätigt",
+    processingBalance:
+      "Ihr Guthaben wird nach der Zahlungsbestätigung aktualisiert.",
     noContracts: "Keine Verträge gefunden",
     noContractsDesc: "Ihrem Konto sind keine aktiven Verträge zugeordnet.",
+    confirmationTitle: "Aufladung bestätigen",
+    completedTitle: "Aufladung abgeschlossen",
+    selectedContracts: "{{count}} ausgewählte Verträge",
+    completedContracts: "{{count}} aufgeladene Verträge",
+    completedDesc: "Ihre Aufladungen wurden erfolgreich abgeschlossen.",
+    completedSingleDesc: "Ihre Aufladung wurde erfolgreich abgeschlossen.",
+    rechargeAmount: "Aufladebetrag",
+    distributedOver: "Auf {{count}} Verträge verteilt",
+    currentBalanceValue: "Aktuelles Guthaben {{amount}}",
+    newBalance: "Neues Guthaben",
+    newAvailableBalance: "Neues verfügbares Guthaben",
+    service: "Service",
+    confirmAndPay: "Bestätigen und bezahlen",
+    returnHome: "Zur Startseite",
+    returnToContract: "Zum Vertrag",
+    amountFor: "Betrag für {{label}}",
   },
 
   cart: {
@@ -280,13 +306,17 @@ const de: Translations = {
   },
 
   qr: {
-    scanDescription: "Verwende diesen Code zum schnellen Aufladen.",
-    scanHint: "Mit der FlexEnergy-App scannen.",
+    scanDescription:
+      "Zeigen Sie diesen Code zum Aufladen am Serviceschalter vor.",
+    scanHint: "Diesen QR-Code dem Schalterpersonal zeigen.",
     contract: "Vertrag {{contract}}",
     rechargeTitle: "Dein QR-Code zum Aufladen",
     operatorHint:
-      "Zeige diesen QR-Code dem Servicepersonal. Der Betrag wird direkt dort eingegeben.",
+      "Das Schalterpersonal scannt diesen QR-Code, um Ihr Konto oder Ihren Vertrag zu identifizieren und die Aufladung fortzusetzen.",
     share: "QR teilen",
+    contractDesc: "Scannen, um auf diesen Vertrag zuzugreifen",
+    openContract: "Vertrags-QR-Code",
+    recharge: "Aufladen",
   },
 
   settings: {
@@ -309,6 +339,13 @@ const de: Translations = {
       personal: "Persönlich",
       account: "Konto",
       security: "Sicherheit",
+      edit: "Profil bearbeiten",
+      editTitle: "Profil bearbeiten",
+      saveChanges: "Änderungen speichern",
+      saved: "Gespeichert",
+      saveError:
+        "Demo-Profil konnte nicht gespeichert werden. Bitte erneut versuchen.",
+      companyName: "Firmenname",
     },
     notifications: {
       title: "Benachrichtigungen",
@@ -320,6 +357,30 @@ const de: Translations = {
       monthlyReportDesc: "Monatliche Verbrauchszusammenfassung erhalten",
       threshold: "Benachrichtigungsschwelle (CHF)",
       save: "Einstellungen speichern",
+      demo: {
+        "demo-welcome": {
+          title: "Willkommen in der Demo",
+          message:
+            "Alle Daten sind simuliert. Änderungen bleiben in diesem Browser und es werden keine echten Zahlungen ausgeführt.",
+        },
+        "demo-low-balance": {
+          title: "Heizguthaben niedrig",
+          message:
+            "Probieren Sie eine simulierte Aufladung für Ihren Heizvertrag aus.",
+        },
+        "demo-reading": {
+          title: "Zählerstand aktualisiert",
+          message:
+            "Ihre simulierten Verbrauchsdaten können jetzt erkundet werden.",
+        },
+      },
+      recharge: {
+        title: "Guthaben aufgeladen",
+        message_one:
+          "Aufladung für {{count}} Vertrag erfolgreich abgeschlossen.",
+        message_other:
+          "Aufladung für {{count}} Verträge erfolgreich abgeschlossen.",
+      },
     },
     alerts: {
       title: "Schwellenwerte & Benachrichtigungen",
@@ -348,6 +409,7 @@ const de: Translations = {
       en: "English",
       it: "Italiano",
       de: "Deutsch",
+      fr: "Französisch",
     },
     exports: {
       title: "Exporte",
