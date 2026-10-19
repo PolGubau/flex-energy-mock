@@ -54,6 +54,8 @@ const it: Translations = {
     welcomeBack: "Bentornato",
     signInToAccount: "Accedi al tuo account",
     incorrectCredentials: "Email o password non corretti. Riprova.",
+    demoNotice:
+      "DEMO · Inserisci qualsiasi dato oppure lascia i campi vuoti. Non servono un account reale, una connessione internet o una VPN. Anche l'accesso con Google è simulato.",
     energyManagement: "Piattaforma di gestione energetica",
     hero: {
       title: "La tua energia,\nnelle tue mani.",

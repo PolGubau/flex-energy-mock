@@ -52,6 +52,8 @@ const en = {
     welcomeBack: "Welcome back",
     signInToAccount: "Sign in to your account",
     incorrectCredentials: "Incorrect email or password. Please try again.",
+    demoNotice:
+      "DEMO · Enter any details or leave the fields blank. No real account, internet connection, or VPN is needed. Google sign-in is simulated too.",
     energyManagement: "Energy Management Platform",
     hero: {
       title: "Your energy,\nin your hands.",

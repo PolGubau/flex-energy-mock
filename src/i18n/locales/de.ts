@@ -55,6 +55,8 @@ const de: Translations = {
     signInToAccount: "Bei Ihrem Konto anmelden",
     incorrectCredentials:
       "E-Mail oder Passwort falsch. Bitte erneut versuchen.",
+    demoNotice:
+      "DEMO · Beliebige Daten eingeben oder die Felder leer lassen. Es werden weder ein echtes Konto noch eine Internetverbindung oder VPN benötigt. Auch die Google-Anmeldung ist simuliert.",
     energyManagement: "Energiemanagement-Plattform",
     hero: {
       title: "Ihre Energie,\nin Ihren Händen.",

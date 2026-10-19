@@ -55,6 +55,8 @@ const fr: Translations = {
     signInToAccount: "Connectez-vous à votre compte",
     incorrectCredentials:
       "E-mail ou mot de passe incorrect. Veuillez réessayer.",
+    demoNotice:
+      "DÉMO · Saisissez n'importe quelles informations ou laissez les champs vides. Aucun compte réel, accès internet ou VPN n'est nécessaire. La connexion Google est également simulée.",
     energyManagement: "Plateforme de gestion de l'énergie",
     hero: {
       title: "Votre énergie,\nà portée de main.",

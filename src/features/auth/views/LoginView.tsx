@@ -65,9 +65,14 @@ export function LoginView({ onShowForgot }: { onShowForgot: () => void }) {
         <div className="relative z-10 space-y-8">
           <div>
             <h1 className="font-heading font-bold text-4xl xl:text-5xl leading-tight text-white mb-3">
-              {t("auth.hero.title").split("\n").map((line, i) => (
-                <span key={i}>{line}{i === 0 && <br />}</span>
-              ))}
+              {t("auth.hero.title")
+                .split("\n")
+                .map((line, i) => (
+                  <span key={i}>
+                    {line}
+                    {i === 0 && <br />}
+                  </span>
+                ))}
             </h1>
             <p className="text-white/55 text-sm max-w-xs leading-relaxed">
               {t("auth.hero.subtitle")}
@@ -165,8 +170,7 @@ export function LoginView({ onShowForgot }: { onShowForgot: () => void }) {
             </div>
 
             <p className="rounded-xl bg-primary/10 px-4 py-3 text-xs text-primary">
-              DEMO · Enter any details or leave the fields blank. No real account,
-              internet connection or VPN is needed. Google sign-in is simulated too.
+              {t("auth.demoNotice")}
             </p>
 
             <form onSubmit={handleSubmit} noValidate className="space-y-4">
