@@ -514,6 +514,8 @@ export interface Notification {
   id: string;
   title: string;
   message: string;
+  translationKey?: string;
+  translationValues?: Record<string, string | number>;
   timestamp: string;
   read: boolean;
   type: "info" | "warning" | "success";

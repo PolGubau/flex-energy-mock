@@ -27,6 +27,15 @@ export function BottomNav() {
   const getNotificationText = (
     notification: (typeof notifications)[number],
   ) => {
+    if (notification.translationKey) {
+      return {
+        title: t(`${notification.translationKey}.title`, notification.translationValues),
+        message: t(
+          `${notification.translationKey}.message`,
+          notification.translationValues,
+        ),
+      };
+    }
     const key = `settings.notifications.demo.${notification.id}`;
     return {
       title: t(`${key}.title`, { defaultValue: notification.title }),

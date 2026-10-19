@@ -1,6 +1,5 @@
 import type React from "react";
 import { createContext, useContext, useEffect, useState } from "react";
-import i18n from "@/i18n";
 import { apiService } from "../services/api";
 import type { AlertSettings, AppState, Notification } from "../types";
 import { toMinorUnits } from "../types";
@@ -119,10 +118,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
     const newNotification: Notification = {
       id: Math.random().toString(36).substr(2, 9),
-      title: i18n.t("settings.notifications.recharge.title"),
-      message: i18n.t("settings.notifications.recharge.message", {
-        count: items.length,
-      }),
+      title: "",
+      message: "",
+      translationKey: "settings.notifications.recharge",
+      translationValues: { count: items.length },
       timestamp: new Date().toISOString(),
       read: false,
       type: "success",
