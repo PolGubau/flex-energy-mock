@@ -41,15 +41,15 @@ function getStatus(status: string) {
     case "normal":
     case "normalstate":
       return { key: "active", className: "bg-emerald-50 text-emerald-700" };
-    case "warning":
-    case "grace":
-    case "gracestate":
+    case "reduced":
+    case "powerreduced":
+    case "power_reduced":
       return {
         key: "powerReduced",
         className: "bg-amber-50 text-amber-700",
       };
     default:
-      return { key: "suspended", className: "bg-rose-50 text-rose-700" };
+      return { key: "blocked", className: "bg-rose-50 text-rose-700" };
   }
 }
 

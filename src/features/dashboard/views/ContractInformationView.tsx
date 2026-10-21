@@ -19,14 +19,17 @@ function getStatusKey(status: string) {
     case "normal":
     case "normalstate":
       return "active";
+    case "reduced":
+    case "powerreduced":
+    case "power_reduced":
+      return "powerReduced";
     case "warning":
     case "grace":
     case "gracestate":
-      return "reduced";
     case "suspended":
     case "lockstate":
     case "closed":
-      return "suspended";
+      return "blocked";
     default:
       return "unknown";
   }
