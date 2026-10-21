@@ -120,6 +120,7 @@ const en = {
     noContractsYet: "You don't have any contracts yet",
     status: {
       active: "Active",
+      blocked: "Blocked",
       reduced: "Reduced",
       powerReduced: "Power reduced",
       suspended: "Suspended",
@@ -401,6 +402,11 @@ const en = {
       it: "Italiano",
       de: "Deutsch",
       fr: "Français",
+    },
+    demoData: {
+      title: "Demo data",
+      description: "Restore the original simulated data for this browser.",
+      reset: "Reset data",
     },
     exports: {
       title: "Exports",

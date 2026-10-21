@@ -121,6 +121,7 @@ const it: Translations = {
     noContractsYet: "Non hai ancora contratti",
     status: {
       active: "Attivo",
+      blocked: "Bloccato",
       reduced: "Ridotto",
       powerReduced: "Potenza ridotta",
       suspended: "Sospeso",
@@ -406,6 +407,11 @@ const it: Translations = {
       de: "Deutsch",
       fr: "Français",
     },
+    demoData: {
+      title: "Dati demo",
+      description: "Ripristina i dati simulati originali in questo browser.",
+      reset: "Ripristina dati",
+    },
     exports: {
       title: "Esportazioni",
       dataExports: "Esportazioni dati",
@@ -423,7 +429,7 @@ const it: Translations = {
       center: "Centro supporto",
       faq: "FAQ",
       contact: "Contatta il supporto",
-      knowledgeBase: "Knowledge Base",
+      knowledgeBase: "Base di conoscenza",
       knowledgeBaseDesc:
         "Guide dettagliate sulla gestione dei consumi e dei cicli di fatturazione.",
       direct: "Supporto diretto",

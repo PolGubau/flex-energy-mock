@@ -123,6 +123,7 @@ const fr: Translations = {
     noContractsYet: "Vous n'avez pas encore de contrat",
     status: {
       active: "Actif",
+      blocked: "Bloqué",
       reduced: "Réduit",
       powerReduced: "Puissance réduite",
       suspended: "Suspendu",
@@ -403,6 +404,12 @@ const fr: Translations = {
       it: "Italiano",
       de: "Deutsch",
       fr: "Français",
+    },
+    demoData: {
+      title: "Données de démonstration",
+      description:
+        "Restaurer les données simulées d'origine dans ce navigateur.",
+      reset: "Réinitialiser les données",
     },
     exports: {
       title: "Exports",

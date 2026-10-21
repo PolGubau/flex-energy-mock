@@ -28,7 +28,7 @@
       "contractID": 301,
       "buContractID": "DEMO-GAS-002",
       "displayName": "Riscaldamento di casa",
-      "serviceStatus": "Warning",
+      "serviceStatus": "PowerReduced",
       "balanceRaw": -1850,
       "averageCost": 520,
       "forecastTotalCost": 15600,

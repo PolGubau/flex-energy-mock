@@ -7,10 +7,10 @@ import fr from "./locales/fr";
 import it from "./locales/it";
 
 export const SUPPORTED_LANGUAGES = [
-  { code: "en", label: "English", flag: "🇬🇧" },
-  { code: "it", label: "Italiano", flag: "🇮🇹" },
-  { code: "de", label: "Deutsch", flag: "🇩🇪" },
-  { code: "fr", label: "Français", flag: "🇫🇷" },
+  { code: "en", label: "English", flag: "🇬🇧", abbreviation: "ENG" },
+  { code: "it", label: "Italiano", flag: "🇮🇹", abbreviation: "ITA" },
+  { code: "de", label: "Deutsch", flag: "🇩🇪", abbreviation: "DEU" },
+  { code: "fr", label: "Français", flag: "🇫🇷", abbreviation: "FRA" },
 ] as const;
 
 export type SupportedLanguage = (typeof SUPPORTED_LANGUAGES)[number]["code"];

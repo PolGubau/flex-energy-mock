@@ -66,9 +66,9 @@ function getContractStatusClass(serviceStatus: string) {
     case "normal":
     case "normalstate":
       return "bg-emerald-50 text-emerald-700";
-    case "warning":
-    case "grace":
-    case "gracestate":
+    case "reduced":
+    case "powerreduced":
+    case "power_reduced":
       return "bg-amber-50 text-amber-700";
     default:
       return "bg-rose-50 text-rose-700";
@@ -81,14 +81,17 @@ function getContractStatusKey(serviceStatus: string) {
     case "normal":
     case "normalstate":
       return "active";
+    case "reduced":
+    case "powerreduced":
+    case "power_reduced":
+      return "powerReduced";
     case "warning":
     case "grace":
     case "gracestate":
-      return "reduced";
     case "suspended":
     case "lockstate":
     case "closed":
-      return "suspended";
+      return "blocked";
     default:
       return "unknown";
   }

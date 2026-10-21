@@ -122,6 +122,7 @@ const de: Translations = {
     noContractsYet: "Sie haben noch keine Verträge",
     status: {
       active: "Aktiv",
+      blocked: "Gesperrt",
       reduced: "Reduziert",
       powerReduced: "Leistung reduziert",
       suspended: "Gesperrt",
@@ -412,6 +413,11 @@ const de: Translations = {
       it: "Italiano",
       de: "Deutsch",
       fr: "Französisch",
+    },
+    demoData: {
+      title: "Demodaten",
+      description: "Die ursprünglichen simulierten Daten in diesem Browser wiederherstellen.",
+      reset: "Daten zurücksetzen",
     },
     exports: {
       title: "Exporte",
